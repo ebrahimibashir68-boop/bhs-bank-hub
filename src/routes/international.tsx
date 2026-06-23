@@ -39,7 +39,7 @@ function Intl() {
     adjustBalance(fromAcct.id, -(amt + fee));
     addTxn({
       accountId: fromAcct.id,
-      description: `Intl ${rail} → ${name || iban} (${dest.country ?? dest.code})`,
+      description: `Intl ${rail} → ${name || iban} (${dest.code})`,
       category: "International",
       amount: -(amt + fee),
       currency: fromAcct.currency,
