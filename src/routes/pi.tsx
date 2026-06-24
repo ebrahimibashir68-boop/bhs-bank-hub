@@ -49,6 +49,63 @@ function Pi() {
     setTo("");
   }
 
+  async function payApp() {
+    setPayStatus(null);
+    let active = session;
+    if (!active) {
+      await signIn();
+      // session won't be updated until next render — bail and let user retry
+      setPayStatus("Sign in completed — tap Pay App again.");
+      return;
+    }
+    setPaying(true);
+    try {
+      const Pi = await getPi();
+      await new Promise<void>((resolve, reject) => {
+        Pi.createPayment(
+          {
+            amount: 1,
+            memo: "Pi Bank — ecosystem setup verification",
+            metadata: { kind: "setup_verification", uid: active!.uid },
+          },
+          {
+            onReadyForServerApproval: async (paymentId) => {
+              setPayStatus(`Approving ${paymentId}…`);
+              await approve({ data: { paymentId, accessToken: active!.accessToken } });
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+              setPayStatus(`Completing ${paymentId}…`);
+              await complete({ data: { paymentId, txid, accessToken: active!.accessToken } });
+              addTxn({
+                accountId: wallet!.id,
+                description: "Paid Pi Bank app fee",
+                category: "Payment",
+                amount: -1,
+                currency: "PI",
+                channel: "Pi Network",
+              });
+              adjustBalance(wallet!.id, -1);
+              setPayStatus(`Payment complete · txid ${txid.slice(0, 10)}…`);
+              resolve();
+            },
+            onCancel: (paymentId) => {
+              setPayStatus(`Payment cancelled (${paymentId})`);
+              resolve();
+            },
+            onError: (error) => {
+              setPayStatus(`Error: ${error.message}`);
+              reject(error);
+            },
+          },
+        );
+      });
+    } catch (e) {
+      setPayStatus(e instanceof Error ? e.message : "Payment failed");
+    } finally {
+      setPaying(false);
+    }
+  }
+
   return (
     <AppShell>
       <PageHeader title="Pi Wallet" subtitle="Pi Network · Mainnet (mock)" />
