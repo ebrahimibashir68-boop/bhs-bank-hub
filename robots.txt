@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ie-global-trade.lovable.app/sitemap.xml
