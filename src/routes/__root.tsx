@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { PiAuthProvider } from "../components/PiAuthProvider";
 
 function NotFoundComponent() {
   return (
@@ -96,6 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
     ],
+    scripts: [{ src: "https://sdk.minepi.com/pi-sdk.js", async: true }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -122,8 +124,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <PiAuthProvider>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </PiAuthProvider>
     </QueryClientProvider>
   );
 }
