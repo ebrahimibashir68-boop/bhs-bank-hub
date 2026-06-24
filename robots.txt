@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://bhs-bank-hub.lovable.app/sitemap.xml
