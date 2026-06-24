@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { useBank } from "@/lib/store";
 import { formatMoney, convert } from "@/lib/banking";
-import { Sparkles, ArrowDownLeft, ArrowUpRight, Pickaxe, QrCode } from "lucide-react";
+import { Sparkles, ArrowDownLeft, ArrowUpRight, Pickaxe, QrCode, CreditCard, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { usePiAuth } from "@/components/PiAuthProvider";
+import { getPi } from "@/lib/pi-sdk";
+import { approvePiPayment, completePiPayment } from "@/lib/pi-auth.functions";
 
 export const Route = createFileRoute("/pi")({
   head: () => ({ meta: [{ title: "Pi Wallet — Pi Bank" }, { name: "description", content: "Manage your Pi cryptocurrency wallet alongside your fiat accounts." }] }),
@@ -17,6 +21,11 @@ function Pi() {
   const [mode, setMode] = useState<"none" | "send" | "receive">("none");
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
+  const [payStatus, setPayStatus] = useState<string | null>(null);
+  const [paying, setPaying] = useState(false);
+  const { session, signIn } = usePiAuth();
+  const approve = useServerFn(approvePiPayment);
+  const complete = useServerFn(completePiPayment);
 
   if (!wallet) return null;
 
