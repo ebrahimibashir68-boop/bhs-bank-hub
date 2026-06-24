@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { CountrySwitcher } from "@/components/CountrySwitcher";
+import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
 import {
