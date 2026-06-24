@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { CountrySwitcher } from "@/components/CountrySwitcher";
+import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
 import {
@@ -54,6 +55,7 @@ function Home() {
         right={<CountrySwitcher />}
       />
       <SimBanner />
+      <PiSignInBar />
 
       <section className="mx-5 mt-2 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/70 p-5 text-primary-foreground shadow-sm">
         <div className="flex items-center justify-between">

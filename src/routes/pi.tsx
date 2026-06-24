@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { useBank } from "@/lib/store";
 import { formatMoney, convert } from "@/lib/banking";
-import { Sparkles, ArrowDownLeft, ArrowUpRight, Pickaxe, QrCode } from "lucide-react";
+import { Sparkles, ArrowDownLeft, ArrowUpRight, Pickaxe, QrCode, CreditCard, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { usePiAuth } from "@/components/PiAuthProvider";
+import { getPi } from "@/lib/pi-sdk";
+import { approvePiPayment, completePiPayment } from "@/lib/pi-auth.functions";
 
 export const Route = createFileRoute("/pi")({
   head: () => ({ meta: [{ title: "Pi Wallet — Pi Bank" }, { name: "description", content: "Manage your Pi cryptocurrency wallet alongside your fiat accounts." }] }),
@@ -17,6 +21,11 @@ function Pi() {
   const [mode, setMode] = useState<"none" | "send" | "receive">("none");
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
+  const [payStatus, setPayStatus] = useState<string | null>(null);
+  const [paying, setPaying] = useState(false);
+  const { session, signIn } = usePiAuth();
+  const approve = useServerFn(approvePiPayment);
+  const complete = useServerFn(completePiPayment);
 
   if (!wallet) return null;
 
@@ -38,6 +47,63 @@ function Pi() {
     setMode("none");
     setAmount("");
     setTo("");
+  }
+
+  async function payApp() {
+    setPayStatus(null);
+    let active = session;
+    if (!active) {
+      await signIn();
+      // session won't be updated until next render — bail and let user retry
+      setPayStatus("Sign in completed — tap Pay App again.");
+      return;
+    }
+    setPaying(true);
+    try {
+      const Pi = await getPi();
+      await new Promise<void>((resolve, reject) => {
+        Pi.createPayment(
+          {
+            amount: 1,
+            memo: "Pi Bank — ecosystem setup verification",
+            metadata: { kind: "setup_verification", uid: active!.uid },
+          },
+          {
+            onReadyForServerApproval: async (paymentId) => {
+              setPayStatus(`Approving ${paymentId}…`);
+              await approve({ data: { paymentId, accessToken: active!.accessToken } });
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+              setPayStatus(`Completing ${paymentId}…`);
+              await complete({ data: { paymentId, txid, accessToken: active!.accessToken } });
+              addTxn({
+                accountId: wallet!.id,
+                description: "Paid Pi Bank app fee",
+                category: "Payment",
+                amount: -1,
+                currency: "PI",
+                channel: "Pi Network",
+              });
+              adjustBalance(wallet!.id, -1);
+              setPayStatus(`Payment complete · txid ${txid.slice(0, 10)}…`);
+              resolve();
+            },
+            onCancel: (paymentId) => {
+              setPayStatus(`Payment cancelled (${paymentId})`);
+              resolve();
+            },
+            onError: (error) => {
+              setPayStatus(`Error: ${error.message}`);
+              reject(error);
+            },
+          },
+        );
+      });
+    } catch (e) {
+      setPayStatus(e instanceof Error ? e.message : "Payment failed");
+    } finally {
+      setPaying(false);
+    }
   }
 
   return (
@@ -82,6 +148,20 @@ function Pi() {
           <button onClick={() => setMode("none")} className="mt-4 rounded-md border border-border px-4 py-2 text-sm">Close</button>
         </div>
       ) : null}
+
+      <section className="mx-5 mt-5 rounded-xl border border-border bg-card p-4">
+        <h2 className="mb-1 text-sm font-semibold flex items-center gap-1.5"><CreditCard className="h-4 w-4" /> Pay Pi Bank app fee</h2>
+        <p className="text-[11px] text-muted-foreground">Sends a 1 π payment to confirm Pi ecosystem setup.</p>
+        <button
+          onClick={() => void payApp()}
+          disabled={paying}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
+          {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          Pay 1 π
+        </button>
+        {payStatus ? <div className="mt-2 text-[11px] text-muted-foreground">{payStatus}</div> : null}
+      </section>
 
       <section className="mx-5 mt-6">
         <h2 className="mb-2 text-sm font-semibold">Pi activity</h2>
