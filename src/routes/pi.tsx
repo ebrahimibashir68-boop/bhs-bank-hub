@@ -71,11 +71,11 @@ function Pi() {
           {
             onReadyForServerApproval: async (paymentId) => {
               setPayStatus(`Approving ${paymentId}…`);
-              await approve({ data: { paymentId, accessToken: active!.accessToken } });
+              await approve({ data: { paymentId } });
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
               setPayStatus(`Completing ${paymentId}…`);
-              await complete({ data: { paymentId, txid, accessToken: active!.accessToken } });
+              await complete({ data: { paymentId, txid } });
               addTxn({
                 accountId: wallet!.id,
                 description: "Paid Pi Bank app fee",
