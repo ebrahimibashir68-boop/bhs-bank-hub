@@ -26,32 +26,42 @@ export const verifyPiAccessToken = createServerFn({ method: "POST" })
     };
   });
 
+function serverKey() {
+  const key = process.env.PI_SERVER_API_KEY;
+  if (!key) throw new Error("PI_SERVER_API_KEY is not configured on the server");
+  return key;
+}
+
 export const approvePiPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: { paymentId: string; accessToken: string }) => {
-    if (!data?.paymentId || !data?.accessToken) throw new Error("paymentId and accessToken required");
+  .inputValidator((data: { paymentId: string }) => {
+    if (!data?.paymentId) throw new Error("paymentId required");
     return data;
   })
   .handler(async ({ data }) => {
     const res = await fetch(`https://api.minepi.com/v2/payments/${data.paymentId}/approve`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${data.accessToken}` },
+      headers: { Authorization: `Key ${serverKey()}` },
     });
-    return { ok: res.ok, status: res.status };
+    const body = await res.text();
+    if (!res.ok) throw new Error(`Pi approve failed ${res.status}: ${body}`);
+    return { ok: true, status: res.status };
   });
 
 export const completePiPayment = createServerFn({ method: "POST" })
-  .inputValidator((data: { paymentId: string; txid: string; accessToken: string }) => {
-    if (!data?.paymentId || !data?.txid || !data?.accessToken) throw new Error("paymentId, txid, accessToken required");
+  .inputValidator((data: { paymentId: string; txid: string }) => {
+    if (!data?.paymentId || !data?.txid) throw new Error("paymentId, txid required");
     return data;
   })
   .handler(async ({ data }) => {
     const res = await fetch(`https://api.minepi.com/v2/payments/${data.paymentId}/complete`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${data.accessToken}`,
+        Authorization: `Key ${serverKey()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ txid: data.txid }),
     });
-    return { ok: res.ok, status: res.status };
+    const body = await res.text();
+    if (!res.ok) throw new Error(`Pi complete failed ${res.status}: ${body}`);
+    return { ok: true, status: res.status };
   });
