@@ -149,6 +149,20 @@ function Pi() {
         </div>
       ) : null}
 
+      <section className="mx-5 mt-5 rounded-xl border border-border bg-card p-4">
+        <h2 className="mb-1 text-sm font-semibold flex items-center gap-1.5"><CreditCard className="h-4 w-4" /> Pay Pi Bank app fee</h2>
+        <p className="text-[11px] text-muted-foreground">Sends a 1 π payment to confirm Pi ecosystem setup.</p>
+        <button
+          onClick={() => void payApp()}
+          disabled={paying}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+        >
+          {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          Pay 1 π
+        </button>
+        {payStatus ? <div className="mt-2 text-[11px] text-muted-foreground">{payStatus}</div> : null}
+      </section>
+
       <section className="mx-5 mt-6">
         <h2 className="mb-2 text-sm font-semibold">Pi activity</h2>
         <div className="overflow-hidden rounded-xl border border-border bg-card">
