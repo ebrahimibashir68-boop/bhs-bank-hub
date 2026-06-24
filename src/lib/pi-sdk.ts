@@ -67,9 +67,11 @@ export function getPi(): Promise<PiSDK> {
   return initPromise;
 }
 
-export async function piAuthenticate(): Promise<PiAuthResult> {
+export async function piAuthenticate(
+  scopes: string[] = ["username", "payments"],
+): Promise<PiAuthResult> {
   const Pi = await getPi();
-  return Pi.authenticate(["username"], (payment) => {
+  return Pi.authenticate(scopes, (payment) => {
     console.warn("[Pi] Incomplete payment found:", payment);
   });
 }
