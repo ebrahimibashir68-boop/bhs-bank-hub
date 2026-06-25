@@ -50,8 +50,8 @@ function Home() {
   return (
     <AppShell>
       <PageHeader
-        title="Hello, Alex"
-        subtitle={`Banking with ${country.centralBank}`}
+        title="Banking Dashboard"
+        subtitle={`Welcome Alex · Banking with ${country.centralBank}`}
         right={<CountrySwitcher />}
       />
       <SimBanner />
@@ -60,10 +60,15 @@ function Home() {
       <section className="mx-5 mt-2 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/70 p-5 text-primary-foreground shadow-sm">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-wider opacity-80">Total balance · {country.currency}</span>
-          <button onClick={() => setHide((h) => !h)} className="opacity-80">
+          <button
+            onClick={() => setHide((h) => !h)}
+            aria-label="Toggle balance visibility"
+            className="opacity-80"
+          >
             {hide ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
+
         <div className="mt-2 text-3xl font-semibold tracking-tight">
           {hide ? "•••••••" : formatMoney(totalLocal, country.currency)}
         </div>
