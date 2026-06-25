@@ -9,12 +9,11 @@ import {
 } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { piAuthenticate } from "@/lib/pi-sdk";
-import { verifyPiAccessToken } from "@/lib/pi-auth.functions";
+import { verifyPiAccessToken, getPiSession, signOutPi } from "@/lib/pi-auth.functions";
 
 export interface PiSession {
   uid: string;
   username: string;
-  accessToken: string;
   verifiedAt: string;
 }
 
@@ -23,7 +22,7 @@ interface PiAuthCtx {
   status: "idle" | "loading" | "ready" | "error";
   error: string | null;
   signIn: () => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
 }
 
 const Ctx = createContext<PiAuthCtx | null>(null);
@@ -33,6 +32,8 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<PiAuthCtx["status"]>("idle");
   const [error, setError] = useState<string | null>(null);
   const verify = useServerFn(verifyPiAccessToken);
+  const fetchSession = useServerFn(getPiSession);
+  const signOutFn = useServerFn(signOutPi);
   const ran = useRef(false);
 
   const signIn = useCallback(async () => {
@@ -40,11 +41,12 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       const auth = await piAuthenticate();
+      // Access token is sent once to the server; cookie session is set there.
+      // Never stored in client state to avoid XSS exfiltration.
       const verified = await verify({ data: { accessToken: auth.accessToken } });
       setSession({
         uid: verified.uid,
         username: verified.username,
-        accessToken: auth.accessToken,
         verifiedAt: verified.verifiedAt,
       });
       setStatus("ready");
@@ -55,19 +57,40 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
     }
   }, [verify]);
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
+    try {
+      await signOutFn({});
+    } catch {
+      // ignore
+    }
     setSession(null);
     setStatus("idle");
     setError(null);
-  }, []);
+  }, [signOutFn]);
 
-  // Auto-trigger on first mount in the browser
+  // Try to rehydrate session from server cookie first; otherwise auto-trigger sign-in.
   useEffect(() => {
     if (ran.current) return;
     ran.current = true;
     if (typeof window === "undefined") return;
-    void signIn();
-  }, [signIn]);
+    (async () => {
+      try {
+        const existing = await fetchSession({});
+        if (existing.authenticated) {
+          setSession({
+            uid: existing.uid,
+            username: existing.username,
+            verifiedAt: new Date().toISOString(),
+          });
+          setStatus("ready");
+          return;
+        }
+      } catch {
+        // fall through to sign-in
+      }
+      void signIn();
+    })();
+  }, [fetchSession, signIn]);
 
   return (
     <Ctx.Provider value={{ session, status, error, signIn, signOut }}>{children}</Ctx.Provider>
