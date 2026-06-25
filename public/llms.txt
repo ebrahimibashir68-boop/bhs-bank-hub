@@ -1,0 +1,14 @@
+# Pi Bank
+
+> Mobile banking concept for the Pi Network ecosystem — pay bills, transfer money, manage a Pi wallet, and bank internationally across multiple countries with central-bank-aware rules.
+
+## Pages
+
+- [Dashboard](/): Account overview, balances, recent activity, and quick actions.
+- [Transfer](/transfer): Send money between accounts and to other people domestically.
+- [Pay Bills](/bills): Pay utility and mobile bills.
+- [Deposit / Withdraw](/cash): Cash deposits and withdrawals.
+- [Mobile Top-up](/topup): Top up prepaid mobile numbers.
+- [International](/international): Cross-border transfers using SWIFT, SEPA, and other rails.
+- [Pi Wallet](/pi): Pi Network wallet, sign-in, and Pi payments.
+- [More](/more): All accounts, services, and per-country central-bank regulation details.

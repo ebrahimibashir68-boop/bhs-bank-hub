@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-md flex-col">
-        <div className="flex-1 pb-24">{children}</div>
+        <main className="flex-1 pb-24">{children}</main>
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md border-t border-border bg-card/95 backdrop-blur">
           <ul className="grid grid-cols-5">
             {TABS.map(({ to, label, icon: Icon }) => {
