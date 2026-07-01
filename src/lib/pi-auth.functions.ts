@@ -130,14 +130,19 @@ export const signOutPi = createServerFn({ method: "POST" }).handler(async () => 
   return { ok: true };
 });
 
+const PAYMENT_ID_RE = /^[a-zA-Z0-9_-]{8,64}$/;
+const TXID_RE = /^[a-zA-Z0-9_-]{8,128}$/;
+
 export const approvePiPayment = createServerFn({ method: "POST" })
   .inputValidator((data: { paymentId: string }) => {
-    if (!data?.paymentId) throw new Error("paymentId required");
+    if (!data?.paymentId || !PAYMENT_ID_RE.test(data.paymentId)) {
+      throw new Error("Invalid paymentId format");
+    }
     return data;
   })
   .handler(async ({ data }) => {
     requirePiSession();
-    const res = await fetch(`https://api.minepi.com/v2/payments/${data.paymentId}/approve`, {
+    const res = await fetch(`https://api.minepi.com/v2/payments/${encodeURIComponent(data.paymentId)}/approve`, {
       method: "POST",
       headers: { Authorization: `Key ${serverKey()}` },
     });
@@ -151,9 +156,15 @@ export const approvePiPayment = createServerFn({ method: "POST" })
 
 export const completePiPayment = createServerFn({ method: "POST" })
   .inputValidator((data: { paymentId: string; txid: string }) => {
-    if (!data?.paymentId || !data?.txid) throw new Error("paymentId, txid required");
+    if (!data?.paymentId || !PAYMENT_ID_RE.test(data.paymentId)) {
+      throw new Error("Invalid paymentId format");
+    }
+    if (!data?.txid || !TXID_RE.test(data.txid)) {
+      throw new Error("Invalid txid format");
+    }
     return data;
   })
+
   .handler(async ({ data }) => {
     requirePiSession();
     const res = await fetch(`https://api.minepi.com/v2/payments/${data.paymentId}/complete`, {
