@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
+      { name: "twitter:title", content: "Pi Bank — Global Banking for the Pi Ecosystem" },
       { name: "twitter:description", content: "Pi Global Banking facilitates seamless international banking and daily financial tasks within the Pi ecosystem." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a6e0dea-aa64-4ace-9a35-11133ade8131/id-preview-471bb17d--93fd3ca1-087c-4a19-b60b-d6391ad4740d.lovable.app-1782238577504.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a6e0dea-aa64-4ace-9a35-11133ade8131/id-preview-471bb17d--93fd3ca1-087c-4a19-b60b-d6391ad4740d.lovable.app-1782238577504.png" },
