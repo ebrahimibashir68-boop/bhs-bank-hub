@@ -167,7 +167,7 @@ export const completePiPayment = createServerFn({ method: "POST" })
 
   .handler(async ({ data }) => {
     requirePiSession();
-    const res = await fetch(`https://api.minepi.com/v2/payments/${data.paymentId}/complete`, {
+    const res = await fetch(`https://api.minepi.com/v2/payments/${encodeURIComponent(data.paymentId)}/complete`, {
       method: "POST",
       headers: {
         Authorization: `Key ${serverKey()}`,
