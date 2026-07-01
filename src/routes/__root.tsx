@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
+      { title: "Pi Bank — Global Banking for the Pi Ecosystem" },
       { name: "description", content: "Pi Global Banking facilitates seamless international banking and daily financial tasks within the Pi ecosystem." },
       { name: "author", content: "Lovable" },
       { name: "google-site-verification", content: "XPIwI92E0qc6n1t0heXo1wFtDKitHDE6v0-SuUtmKNA" },
