@@ -8,7 +8,17 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/more")({
-  head: () => ({ meta: [{ title: "More — Pi Bank" }, { name: "description", content: "All your accounts, services, and central-bank compliance details." }] }),
+  head: () => ({
+    meta: [
+      { title: "Accounts & Services — Pi Bank" },
+      { name: "description", content: "View all your accounts, services, and country-specific central-bank compliance details in one place." },
+      { property: "og:title", content: "Accounts & Services — Pi Bank" },
+      { property: "og:description", content: "All accounts, services, and central-bank compliance in one place." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/more" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/more" }],
+  }),
   component: More,
 });
 

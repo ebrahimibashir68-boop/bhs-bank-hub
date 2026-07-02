@@ -6,7 +6,17 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Check, Globe2 } from "lucide-react";
 
 export const Route = createFileRoute("/international")({
-  head: () => ({ meta: [{ title: "International — Pi Bank" }, { name: "description", content: "Send money across borders with SWIFT, SEPA, Wise, and more." }] }),
+  head: () => ({
+    meta: [
+      { title: "International Transfers — Pi Bank" },
+      { name: "description", content: "Send money across borders with SWIFT, SEPA, Wise, and other cross-border rails, with live FX and central-bank compliance." },
+      { property: "og:title", content: "International Transfers — Pi Bank" },
+      { property: "og:description", content: "Cross-border payments over SWIFT, SEPA, and Wise with live FX." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/international" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/international" }],
+  }),
   component: Intl,
 });
 

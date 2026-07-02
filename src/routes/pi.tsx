@@ -10,7 +10,17 @@ import { getPi } from "@/lib/pi-sdk";
 import { approvePiPayment, completePiPayment } from "@/lib/pi-auth.functions";
 
 export const Route = createFileRoute("/pi")({
-  head: () => ({ meta: [{ title: "Pi Wallet — Pi Bank" }, { name: "description", content: "Manage your Pi cryptocurrency wallet alongside your fiat accounts." }] }),
+  head: () => ({
+    meta: [
+      { title: "Pi Wallet — Pi Bank" },
+      { name: "description", content: "Sign in with Pi Network, send and receive Pi, and manage your Pi wallet alongside your fiat bank accounts." },
+      { property: "og:title", content: "Pi Wallet — Pi Bank" },
+      { property: "og:description", content: "Sign in with Pi Network and manage Pi alongside your fiat accounts." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/pi" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/pi" }],
+  }),
   component: Pi,
 });
 

@@ -6,7 +6,17 @@ import { useState } from "react";
 import { Check, Smartphone } from "lucide-react";
 
 export const Route = createFileRoute("/topup")({
-  head: () => ({ meta: [{ title: "Mobile Top-up — Pi Bank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Mobile Top-up — Pi Bank" },
+      { name: "description", content: "Top up prepaid mobile numbers across supported carriers in seconds from any Pi Bank account." },
+      { property: "og:title", content: "Mobile Top-up — Pi Bank" },
+      { property: "og:description", content: "Recharge prepaid mobile plans in seconds from your Pi Bank account." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/topup" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/topup" }],
+  }),
   component: Topup,
 });
 

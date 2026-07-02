@@ -6,7 +6,17 @@ import { useState } from "react";
 import { Banknote, ArrowDownToLine, ArrowUpFromLine, Check } from "lucide-react";
 
 export const Route = createFileRoute("/cash")({
-  head: () => ({ meta: [{ title: "Deposit / Withdraw — Pi Bank" }] }),
+  head: () => ({
+    meta: [
+      { title: "Deposit & Withdraw Cash — Pi Bank" },
+      { name: "description", content: "Deposit or withdraw cash from your Pi Bank accounts at ATMs and branches, with country-aware daily limits." },
+      { property: "og:title", content: "Deposit & Withdraw Cash — Pi Bank" },
+      { property: "og:description", content: "Move cash in and out of your Pi Bank accounts with country-aware limits." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/cash" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/cash" }],
+  }),
   component: Cash,
 });
 
