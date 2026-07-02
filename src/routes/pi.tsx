@@ -83,7 +83,7 @@ function Pi() {
           {
             amount: 1,
             memo: "Pi Bank — ecosystem setup verification",
-            metadata: { kind: "setup_verification", uid: active!.uid },
+            metadata: { kind: "setup_verification", uid: session?.uid },
           },
           {
             onReadyForServerApproval: async (paymentId) => {
