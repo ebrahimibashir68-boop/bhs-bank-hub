@@ -6,7 +6,17 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/bills")({
-  head: () => ({ meta: [{ title: "Pay Bills — Pi Bank" }, { name: "description", content: "Pay utility, mobile, internet, and tax bills for your country." }] }),
+  head: () => ({
+    meta: [
+      { title: "Pay Bills — Pi Bank" },
+      { name: "description", content: "Pay utility, mobile, internet, and tax bills for your country from one mobile banking dashboard." },
+      { property: "og:title", content: "Pay Bills — Pi Bank" },
+      { property: "og:description", content: "Pay every utility, mobile, and tax bill from one place." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/bills" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/bills" }],
+  }),
   component: Bills,
 });
 

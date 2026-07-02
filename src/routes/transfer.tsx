@@ -6,7 +6,17 @@ import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 
 export const Route = createFileRoute("/transfer")({
-  head: () => ({ meta: [{ title: "Transfer — Pi Bank" }, { name: "description", content: "Send money between accounts using your country's payment rails." }] }),
+  head: () => ({
+    meta: [
+      { title: "Transfer Money — Pi Bank" },
+      { name: "description", content: "Send money between accounts and to other people using your country's domestic payment rails like ACH, UPI, and Faster Payments." },
+      { property: "og:title", content: "Transfer Money — Pi Bank" },
+      { property: "og:description", content: "Move money instantly with your country's domestic payment rails." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/transfer" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/transfer" }],
+  }),
   component: Transfer,
 });
 
