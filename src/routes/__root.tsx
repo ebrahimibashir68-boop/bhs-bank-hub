@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Pi Bank — Global Banking for the Pi Ecosystem" },
       { name: "description", content: "Pi Global Banking facilitates seamless international banking and daily financial tasks within the Pi ecosystem." },
       { name: "author", content: "Lovable" },
-      { name: "google-site-verification", content: "XPIwI92E0qc6n1t0heXo1wFtDKitHDE6v0-SuUtmKNA" },
+      { name: "google-site-verification", content: "i9tITxdY2UXlT51LsaIWnRb_bgtCLe9qtqSSYyCA7Zs" },
       { property: "og:title", content: "Pi Bank — Global Banking for the Pi Ecosystem" },
       { property: "og:description", content: "Pi Global Banking facilitates seamless international banking and daily financial tasks within the Pi ecosystem." },
       { property: "og:type", content: "website" },
@@ -110,7 +110,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <meta name="google-site-verification" content="XPIwI92E0qc6n1t0heXo1wFtDKitHDE6v0-SuUtmKNA" />
+        <meta name="google-site-verification" content="i9tITxdY2UXlT51LsaIWnRb_bgtCLe9qtqSSYyCA7Zs" />
         <HeadContent />
       </head>
       <body>
