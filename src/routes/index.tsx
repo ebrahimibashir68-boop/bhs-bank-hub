@@ -13,11 +13,14 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Pi Bank — Mobile Banking for the Pi Ecosystem" },
-      { name: "description", content: "All-in-one mobile banking: pay bills, transfer money, manage Pi wallet, and bank internationally across 6 countries." },
+      { name: "description", content: "All-in-one mobile banking: pay bills, transfer money, manage a Pi wallet, and bank internationally across 6 countries." },
       { name: "google-site-verification", content: "XPIwI92E0qc6n1t0heXo1wFtDKitHDE6v0-SuUtmKNA" },
       { property: "og:title", content: "Pi Bank — Mobile Banking for the Pi Ecosystem" },
       { property: "og:description", content: "Pay bills, send money worldwide, and manage your Pi wallet in one app." },
+      { property: "og:url", content: "https://bhs-bank-hub.lovable.app/" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://bhs-bank-hub.lovable.app/" }],
   }),
   component: Home,
 });
