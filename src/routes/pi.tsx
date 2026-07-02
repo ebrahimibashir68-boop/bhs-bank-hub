@@ -63,14 +63,19 @@ function Pi() {
 
   async function payApp() {
     setPayStatus(null);
-    let active = session;
-    if (!active) {
-      await signIn();
-      // session won't be updated until next render — bail and let user retry
-      setPayStatus("Sign in completed — tap Pay App again.");
+    if (!session) {
+      const r = await signIn(["username", "payments"]);
+      if (!r) return;
+      if (!r.scopes.includes("payments")) {
+        setPayStatus('The "payments" scope was not granted. Tap "Grant payments scope" to re-authorize.');
+        return;
+      }
+    } else if (!hasScope("payments")) {
+      setPayStatus('The "payments" scope is missing. Tap "Grant payments scope" to re-authorize.');
       return;
     }
     setPaying(true);
+
     try {
       const Pi = await getPi();
       await new Promise<void>((resolve, reject) => {
