@@ -33,11 +33,13 @@ function Pi() {
   const [amount, setAmount] = useState("");
   const [payStatus, setPayStatus] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);
-  const { session, signIn } = usePiAuth();
+  const { session, scopes, hasScope, signIn } = usePiAuth();
   const approve = useServerFn(approvePiPayment);
   const complete = useServerFn(completePiPayment);
+  const needsPaymentsScope = !!session && !hasScope("payments");
 
   if (!wallet) return null;
+
 
   const usdValue = convert(wallet.balance, "PI", "USD");
 
