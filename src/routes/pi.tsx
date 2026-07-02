@@ -33,11 +33,13 @@ function Pi() {
   const [amount, setAmount] = useState("");
   const [payStatus, setPayStatus] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);
-  const { session, signIn } = usePiAuth();
+  const { session, scopes, hasScope, signIn } = usePiAuth();
   const approve = useServerFn(approvePiPayment);
   const complete = useServerFn(completePiPayment);
+  const needsPaymentsScope = !!session && !hasScope("payments");
 
   if (!wallet) return null;
+
 
   const usdValue = convert(wallet.balance, "PI", "USD");
 
@@ -61,14 +63,19 @@ function Pi() {
 
   async function payApp() {
     setPayStatus(null);
-    let active = session;
-    if (!active) {
-      await signIn();
-      // session won't be updated until next render — bail and let user retry
-      setPayStatus("Sign in completed — tap Pay App again.");
+    if (!session) {
+      const r = await signIn(["username", "payments"]);
+      if (!r) return;
+      if (!r.scopes.includes("payments")) {
+        setPayStatus('The "payments" scope was not granted. Tap "Grant payments scope" to re-authorize.');
+        return;
+      }
+    } else if (!hasScope("payments")) {
+      setPayStatus('The "payments" scope is missing. Tap "Grant payments scope" to re-authorize.');
       return;
     }
     setPaying(true);
+
     try {
       const Pi = await getPi();
       await new Promise<void>((resolve, reject) => {
@@ -76,7 +83,7 @@ function Pi() {
           {
             amount: 1,
             memo: "Pi Bank — ecosystem setup verification",
-            metadata: { kind: "setup_verification", uid: active!.uid },
+            metadata: { kind: "setup_verification", uid: session?.uid },
           },
           {
             onReadyForServerApproval: async (paymentId) => {
@@ -162,16 +169,32 @@ function Pi() {
       <section className="mx-5 mt-5 rounded-xl border border-border bg-card p-4">
         <h2 className="mb-1 text-sm font-semibold flex items-center gap-1.5"><CreditCard className="h-4 w-4" /> Pay Pi Bank app fee</h2>
         <p className="text-[11px] text-muted-foreground">Sends a 1 π payment to confirm Pi ecosystem setup.</p>
+        {needsPaymentsScope ? (
+          <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-[11px] text-amber-800 dark:text-amber-300">
+            <div className="font-semibold">"payments" scope required</div>
+            <p className="mt-1">You're signed in with Pi, but this session didn't grant the <code>payments</code> scope needed to create a payment. Re-authorize to continue.</p>
+            <button
+              onClick={() => void signIn(["username", "payments"])}
+              className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-amber-600 px-3 py-1.5 text-xs font-medium text-white"
+            >
+              Grant payments scope
+            </button>
+          </div>
+        ) : null}
         <button
           onClick={() => void payApp()}
-          disabled={paying}
+          disabled={paying || needsPaymentsScope}
           className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Pay 1 π
         </button>
         {payStatus ? <div className="mt-2 text-[11px] text-muted-foreground">{payStatus}</div> : null}
+        {scopes.length > 0 ? (
+          <div className="mt-2 text-[10px] text-muted-foreground">Granted scopes: {scopes.join(", ")}</div>
+        ) : null}
       </section>
+
 
       <section className="mx-5 mt-6">
         <h2 className="mb-2 text-sm font-semibold">Pi activity</h2>
