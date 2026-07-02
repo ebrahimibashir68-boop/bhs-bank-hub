@@ -12,3 +12,4 @@
 - [International](/international): Cross-border transfers using SWIFT, SEPA, and other rails.
 - [Pi Wallet](/pi): Pi Network wallet, sign-in, and Pi payments.
 - [More](/more): All accounts, services, and per-country central-bank regulation details.
+- [Guide](/guide): Pi Network banking & compliance guide — KYC, central-bank reporting, SWIFT/SEPA, and Pi coin value.
