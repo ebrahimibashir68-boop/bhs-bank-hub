@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PiRouteImport } from './routes/pi'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as InternationalRouteImport } from './routes/international'
+import { Route as GuideRouteImport } from './routes/guide'
 import { Route as CashRouteImport } from './routes/cash'
 import { Route as BillsRouteImport } from './routes/bills'
 import { Route as IndexRouteImport } from './routes/index'
@@ -49,6 +50,11 @@ const InternationalRoute = InternationalRouteImport.update({
   path: '/international',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuideRoute = GuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CashRoute = CashRouteImport.update({
   id: '/cash',
   path: '/cash',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bills': typeof BillsRoute
   '/cash': typeof CashRoute
+  '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bills': typeof BillsRoute
   '/cash': typeof CashRoute
+  '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bills': typeof BillsRoute
   '/cash': typeof CashRoute
+  '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bills'
     | '/cash'
+    | '/guide'
     | '/international'
     | '/more'
     | '/pi'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bills'
     | '/cash'
+    | '/guide'
     | '/international'
     | '/more'
     | '/pi'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bills'
     | '/cash'
+    | '/guide'
     | '/international'
     | '/more'
     | '/pi'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BillsRoute: typeof BillsRoute
   CashRoute: typeof CashRoute
+  GuideRoute: typeof GuideRoute
   InternationalRoute: typeof InternationalRoute
   MoreRoute: typeof MoreRoute
   PiRoute: typeof PiRoute
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternationalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guide': {
+      id: '/guide'
+      path: '/guide'
+      fullPath: '/guide'
+      preLoaderRoute: typeof GuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cash': {
       id: '/cash'
       path: '/cash'
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BillsRoute: BillsRoute,
   CashRoute: CashRoute,
+  GuideRoute: GuideRoute,
   InternationalRoute: InternationalRoute,
   MoreRoute: MoreRoute,
   PiRoute: PiRoute,
