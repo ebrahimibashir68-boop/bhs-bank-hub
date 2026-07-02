@@ -69,9 +69,42 @@ export function getPi(): Promise<PiSDK> {
 
 export async function piAuthenticate(
   scopes: string[] = ["username", "payments"],
-): Promise<PiAuthResult> {
+): Promise<PiAuthResult & { scopes: string[] }> {
   const Pi = await getPi();
-  return Pi.authenticate(scopes, (payment) => {
+  const result = await Pi.authenticate(scopes, (payment) => {
     console.warn("[Pi] Incomplete payment found:", payment);
   });
+  // Pi SDK returns auth only if all requested scopes were granted.
+  return { ...result, scopes };
 }
+
+const SCOPES_KEY = "pi_granted_scopes";
+
+export function readGrantedScopes(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SCOPES_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function writeGrantedScopes(scopes: string[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(SCOPES_KEY, JSON.stringify(scopes));
+  } catch {
+    // ignore
+  }
+}
+
+export function clearGrantedScopes() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(SCOPES_KEY);
+  } catch {
+    // ignore
+  }
+}
+
