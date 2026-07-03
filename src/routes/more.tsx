@@ -90,7 +90,7 @@ function More() {
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <Row icon={ShieldCheck}>Security & 2FA</Row>
           <Row icon={FileText}>Statements ({txns.length} txns)</Row>
-          <Row icon={Settings}>Settings</Row>
+          <Row to="/settings" icon={Settings}>Settings</Row>
           <Row icon={LogOut}>Sign out</Row>
         </div>
       </section>

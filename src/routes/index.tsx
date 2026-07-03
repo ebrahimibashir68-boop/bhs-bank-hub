@@ -5,7 +5,7 @@ import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
 import {
-  ArrowLeftRight, Receipt, Banknote, Smartphone, Send, Globe2, Sparkles, Eye, EyeOff,
+  ArrowLeftRight, Receipt, Banknote, Smartphone, Send, Globe2, Sparkles, Eye, EyeOff, Settings,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -56,7 +56,18 @@ function Home() {
       <PageHeader
         title="Banking Dashboard"
         subtitle={`Welcome Alex · Banking with ${country.centralBank}`}
-        right={<CountrySwitcher />}
+        right={
+          <div className="flex items-center gap-2">
+            <CountrySwitcher />
+            <Link
+              to="/settings"
+              aria-label="Open settings"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:text-foreground"
+            >
+              <Settings className="h-4 w-4" />
+            </Link>
+          </div>
+        }
       />
       <SimBanner />
       <PiSignInBar />
