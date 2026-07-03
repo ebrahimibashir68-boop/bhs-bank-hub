@@ -5,7 +5,7 @@ import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
 import {
-  ArrowLeftRight, Receipt, Banknote, Smartphone, Send, Globe2, Sparkles, Eye, EyeOff,
+  ArrowLeftRight, Receipt, Banknote, Smartphone, Send, Globe2, Sparkles, Eye, EyeOff, Settings,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 

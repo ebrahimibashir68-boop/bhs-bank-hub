@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransferRouteImport } from './routes/transfer'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PiRouteImport } from './routes/pi'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as InternationalRouteImport } from './routes/international'
@@ -33,6 +34,11 @@ const TopupRoute = TopupRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PiRoute = PiRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/international': typeof InternationalRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
   '/transfer': typeof TransferRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/international': typeof InternationalRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
   '/transfer': typeof TransferRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/international': typeof InternationalRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
   '/transfer': typeof TransferRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/international'
     | '/more'
     | '/pi'
+    | '/settings'
     | '/sitemap.xml'
     | '/topup'
     | '/transfer'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/international'
     | '/more'
     | '/pi'
+    | '/settings'
     | '/sitemap.xml'
     | '/topup'
     | '/transfer'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/international'
     | '/more'
     | '/pi'
+    | '/settings'
     | '/sitemap.xml'
     | '/topup'
     | '/transfer'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   InternationalRoute: typeof InternationalRoute
   MoreRoute: typeof MoreRoute
   PiRoute: typeof PiRoute
+  SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TopupRoute: typeof TopupRoute
   TransferRoute: typeof TransferRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pi': {
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   InternationalRoute: InternationalRoute,
   MoreRoute: MoreRoute,
   PiRoute: PiRoute,
+  SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TopupRoute: TopupRoute,
   TransferRoute: TransferRoute,
