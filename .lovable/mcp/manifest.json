@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "pi-bank-mcp",
+      "version": "0.1.0",
+      "title": "Pi Bank MCP"
+    },
+    "tools": [
+      {
+        "name": "list_countries",
+        "title": "List supported countries",
+        "description": "Returns the countries Pi Bank supports along with their currency, central bank, and payment rails.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_country_regulation",
+        "title": "Get country regulation details",
+        "description": "Returns central bank, KYC requirements, transaction limits, and AML notes for a supported country.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "country": {
+              "type": "string",
+              "enum": [
+                "US",
+                "GB",
+                "EU",
+                "NG",
+                "IN",
+                "AE"
+              ],
+              "description": "ISO-style country code supported by Pi Bank."
+            }
+          },
+          "required": [
+            "country"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_billers",
+        "title": "List billers for a country",
+        "description": "Returns the utility/tax billers available for bill payment in the given country.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "country": {
+              "type": "string",
+              "enum": [
+                "US",
+                "GB",
+                "EU",
+                "NG",
+                "IN",
+                "AE"
+              ],
+              "description": "ISO-style country code supported by Pi Bank."
+            }
+          },
+          "required": [
+            "country"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
