@@ -21,6 +21,7 @@ import { Route as GuideRouteImport } from './routes/guide'
 import { Route as CashRouteImport } from './routes/cash'
 import { Route as BillsRouteImport } from './routes/bills'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PinetMetaRouteImport } from './routes/pinet.meta'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -85,6 +86,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PinetMetaRoute = PinetMetaRouteImport.update({
+  id: '/pinet/meta',
+  path: '/pinet/meta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/transfer': typeof TransferRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/pinet/meta': typeof PinetMetaRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesByTo {
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/transfer': typeof TransferRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/pinet/meta': typeof PinetMetaRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesById {
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/transfer': typeof TransferRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/pinet/meta': typeof PinetMetaRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRouteTypes {
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/transfer'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/pinet/meta'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/transfer'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/pinet/meta'
     | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/transfer'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/pinet/meta'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   TransferRoute: typeof TransferRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  PinetMetaRoute: typeof PinetMetaRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
@@ -314,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pinet/meta': {
+      id: '/pinet/meta'
+      path: '/pinet/meta'
+      fullPath: '/pinet/meta'
+      preLoaderRoute: typeof PinetMetaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -354,6 +374,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  PinetMetaRoute: PinetMetaRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
