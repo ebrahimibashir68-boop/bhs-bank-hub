@@ -185,3 +185,15 @@
     color: var(--color-foreground);
   }
 }
+
+@utility bg-hero-gradient {
+  background-image: var(--gradient-hero);
+}
+
+@utility bg-aurora {
+  background-image: var(--gradient-aurora);
+}
+
+@utility shadow-lift {
+  box-shadow: var(--shadow-lift);
+}
