@@ -178,7 +178,7 @@ function Home() {
                 </span>
                 <h3 className="text-sm font-semibold">{title}</h3>
               </div>
-              <p className="mt-2 text-[11.5px] leading-relaxed text-muted-foreground">{body}</p>
+              <p className="mt-2 text-[11.5px] leading-relaxed text-foreground/75">{body}</p>
             </div>
           ))}
         </div>
