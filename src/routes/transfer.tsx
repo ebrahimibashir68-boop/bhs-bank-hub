@@ -2,7 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney } from "@/lib/banking";
-import { useState } from "react";
+import {
+  BANK_IDENTITY,
+  PURPOSE_CODES,
+  generateEndToEndId,
+  generateUetr,
+  isoDate,
+  messageTypeForRail,
+  screenPayment,
+  validateAccountIdentifier,
+  type PurposeCode,
+} from "@/lib/iso20022";
+import { useMemo, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 
 export const Route = createFileRoute("/transfer")({
@@ -28,17 +39,33 @@ function Transfer() {
   const [to, setTo] = useState("");
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
-  const [rail, setRail] = useState(country.rails[0]);
-  const [done, setDone] = useState(false);
+  const [rail, setRail] = useState(country.rails[0]!);
+  const [purpose, setPurpose] = useState<PurposeCode>("SUPP");
+  const [remittance, setRemittance] = useState("");
+  const [receipt, setReceipt] = useState<{ uetr: string; endToEndId: string; valueDate: string } | null>(null);
+  const bank = BANK_IDENTITY[activeCountry];
 
   const fromAcct = accounts.find((a) => a.id === from);
   const amt = parseFloat(amount) || 0;
   const overLimit = amt > country.singleTxnLimit;
   const needsReport = amt >= country.reportingThreshold;
+  const msgType = messageTypeForRail(rail);
+  const acctCheck = validateAccountIdentifier(activeCountry, to);
+  const screening = useMemo(
+    () =>
+      screenPayment({
+        beneficiaryName: name,
+        amount: amt,
+        currency: fromAcct?.currency ?? country.currency,
+        originCountry: activeCountry,
+        destinationCountry: activeCountry,
+      }),
+    [name, amt, fromAcct, country.currency, activeCountry],
+  );
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fromAcct || amt <= 0 || overLimit) return;
+    if (!fromAcct || amt <= 0 || overLimit || screening.status === "blocked") return;
     adjustBalance(fromAcct.id, -amt);
     addTxn({
       accountId: fromAcct.id,
@@ -48,10 +75,10 @@ function Transfer() {
       currency: fromAcct.currency,
       channel: rail,
     });
-    setDone(true);
+    setReceipt({ uetr: generateUetr(), endToEndId: generateEndToEndId(), valueDate: isoDate(new Date()) });
   }
 
-  if (done) {
+  if (receipt) {
     return (
       <AppShell>
         <PageHeader title="Transfer sent" />
@@ -61,12 +88,20 @@ function Transfer() {
           </div>
           <div className="text-lg font-semibold">{formatMoney(amt, fromAcct?.currency ?? country.currency)}</div>
           <div className="mt-1 text-sm text-muted-foreground">to {name || to} via {rail}</div>
+          <dl className="mt-4 space-y-1 rounded-md bg-muted/50 p-3 text-left text-[11px]">
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Message</span><span className="text-right">{msgType.iso}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">UETR</span><span className="break-all text-right font-mono">{receipt.uetr}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">End-to-end ID</span><span className="break-all text-right font-mono">{receipt.endToEndId}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Value date</span><span>{receipt.valueDate}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Clearing</span><span className="text-right">{bank.clearingSystem} · {bank.memberId}</span></div>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">Purpose</span><span>{purpose}</span></div>
+          </dl>
           {needsReport ? (
             <div className="mt-4 rounded-md bg-amber-100/50 px-3 py-2 text-[11px] text-amber-900">
               Per {country.centralBank} rules, this transfer is over the {formatMoney(country.reportingThreshold, country.currency)} reporting threshold and would be reported.
             </div>
           ) : null}
-          <button onClick={() => { setDone(false); setAmount(""); setTo(""); setName(""); }} className="mt-5 w-full rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground">
+          <button onClick={() => { setReceipt(null); setAmount(""); setTo(""); setName(""); }} className="mt-5 w-full rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground">
             New transfer
           </button>
         </div>
@@ -93,13 +128,25 @@ function Transfer() {
           <select value={rail} onChange={(e) => setRail(e.target.value)} className="select">
             {country.rails.map((r) => <option key={r}>{r}</option>)}
           </select>
+          <div className="mt-1 text-[11px] text-muted-foreground">{msgType.name} · {msgType.iso} · {bank.clearingSystem}</div>
         </Field>
 
         <Field label="Recipient name">
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Doe" className="input" />
         </Field>
         <Field label="Account number / IBAN / UPI ID">
-          <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="recipient identifier" className="input" />
+          <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="recipient identifier" className="input font-mono" />
+          {to && !acctCheck.valid ? <div className="mt-1 text-[11px] text-destructive">{acctCheck.reason}</div> : null}
+        </Field>
+
+        <Field label="Purpose code (ISO 20022)">
+          <select value={purpose} onChange={(e) => setPurpose(e.target.value as PurposeCode)} className="select">
+            {PURPOSE_CODES.map((p) => <option key={p.code} value={p.code}>{p.code} — {p.label}</option>)}
+          </select>
+        </Field>
+
+        <Field label="Remittance information">
+          <input value={remittance} onChange={(e) => setRemittance(e.target.value)} maxLength={140} placeholder="Reference shown to the payee" className="input" />
         </Field>
 
         <Field label={`Amount (${fromAcct?.currency ?? country.currency})`}>
@@ -124,7 +171,7 @@ function Transfer() {
 
         <button
           type="submit"
-          disabled={!from || !to || amt <= 0 || overLimit}
+          disabled={!from || !to || amt <= 0 || overLimit || !acctCheck.valid || screening.status === "blocked"}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
           Send {formatMoney(amt, fromAcct?.currency ?? country.currency)} <ArrowRight className="h-4 w-4" />
