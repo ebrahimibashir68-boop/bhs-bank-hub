@@ -91,6 +91,51 @@
           ]
         },
         "outputSchema": null
+      },
+      {
+        "name": "validate_payment_instruction",
+        "title": "Validate a payment instruction against SWIFT / ISO 20022 rules",
+        "description": "Validates a beneficiary account identifier (IBAN mod-97-10 or national format) and BIC (ISO 9362) for a destination country, and reports the ISO 20022 / MT message type, clearing system and correspondent bank that would be used.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "country": {
+              "type": "string",
+              "enum": [
+                "US",
+                "GB",
+                "EU",
+                "NG",
+                "IN",
+                "AE"
+              ],
+              "description": "Destination country supported by Pi Bank."
+            },
+            "account": {
+              "type": "string",
+              "description": "Beneficiary IBAN or national account number."
+            },
+            "bic": {
+              "description": "Beneficiary bank BIC (ISO 9362).",
+              "type": "string"
+            },
+            "rail": {
+              "description": "Payment rail, e.g. SWIFT, SEPA, UPI, FedNow.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "country",
+            "account"
+          ]
+        },
+        "outputSchema": null
       }
     ]
   }
