@@ -5,7 +5,7 @@ import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
 import {
-  ArrowLeftRight, Receipt, Banknote, Smartphone, Globe2, Sparkles, Eye, EyeOff, Settings,
+  ArrowLeftRight, Receipt, Banknote, Smartphone, Globe2, Sparkles, Eye, EyeOff, Settings, Bot,
   ShieldCheck, Landmark, Users, ArrowUpRight, BookOpen,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -27,6 +27,7 @@ export const Route = createFileRoute("/")({
 });
 
 const QUICK = [
+  { to: "/assistant", icon: Bot, label: "Pi Assist", tint: "bg-pi/15 text-pi" },
   { to: "/transfer", icon: ArrowLeftRight, label: "Transfer", tint: "bg-pi/15 text-pi" },
   { to: "/bills", icon: Receipt, label: "Pay Bills", tint: "bg-sunrise/20 text-sunrise-foreground" },
   { to: "/cash", icon: Banknote, label: "Deposit", tint: "bg-mint/20 text-mint-foreground" },

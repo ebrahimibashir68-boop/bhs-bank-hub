@@ -5,6 +5,7 @@
 ## Pages
 
 - [Dashboard](/): Account overview, balances, recent activity, and quick actions.
+- [Pi Assist](/assistant): AI banking agent that explains services and performs banking tasks for you.
 - [Transfer](/transfer): Send money between accounts and to other people domestically.
 - [Pay Bills](/bills): Pay utility and mobile bills.
 - [Deposit / Withdraw](/cash): Cash deposits and withdrawals.
