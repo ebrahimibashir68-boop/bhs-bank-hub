@@ -52,34 +52,49 @@ export const Route = createFileRoute("/assistant")({
   component: AssistantPage,
 });
 
-const STORAGE_KEY = "pi-assist-conversation-v1";
+const STORAGE_PREFIX = "pi-assist-conversation-v1";
+const AGENT_KEY = "pi-assist-agent-v1";
 
-const SUGGESTIONS = [
-  "What can you do for me?",
-  "Pay my electricity bill",
-  "Send 250 to my savings account",
-  "How much did I spend recently?",
-  "Explain the rules of my country's central bank",
-];
+function storageKey(agent: AgentId) {
+  return agent === "pi-assist" ? STORAGE_PREFIX : `${STORAGE_PREFIX}:${agent}`;
+}
 
-function loadMessages(): UIMessage[] {
+function loadMessages(agent: AgentId): UIMessage[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(storageKey(agent));
     return raw ? (JSON.parse(raw) as UIMessage[]) : [];
   } catch {
     return [];
   }
 }
 
+function loadAgent(): AgentId {
+  if (typeof window === "undefined") return "pi-assist";
+  const saved = window.localStorage.getItem(AGENT_KEY);
+  return (AGENT_IDS as readonly string[]).includes(saved ?? "") ? (saved as AgentId) : "pi-assist";
+}
+
 type ToolPart = ToolUIPart | DynamicToolUIPart;
 
 function AssistantPage() {
   const navigate = useNavigate();
-  const [initial] = useState<UIMessage[]>(() => loadMessages());
+  const [agentId, setAgentId] = useState<AgentId>(() => loadAgent());
+  const agent = AGENTS[agentId];
+  const [initialByAgent] = useState<Record<string, UIMessage[]>>(() =>
+    Object.fromEntries(AGENT_IDS.map((id) => [id, loadMessages(id)])),
+  );
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        body: { agent: agentId },
+      }),
+    [agentId],
+  );
+
 
   const runTool = useCallback(
     (name: string, input: Record<string, unknown>) => {
