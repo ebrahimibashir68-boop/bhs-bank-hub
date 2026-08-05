@@ -262,8 +262,8 @@ function AssistantPage() {
   );
 
   const { messages, sendMessage, status, addToolResult, setMessages } = useChat({
-    id: "pi-assist",
-    messages: initial,
+    id: agentId,
+    messages: initialByAgent[agentId] ?? [],
     transport,
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall: ({ toolCall }) => {
@@ -284,11 +284,13 @@ function AssistantPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      window.localStorage.setItem(AGENT_KEY, agentId);
+      window.localStorage.setItem(storageKey(agentId), JSON.stringify(messages));
     } catch {
       // storage full or unavailable — conversation stays in memory
     }
-  }, [messages]);
+  }, [messages, agentId]);
+
 
   const busy = status === "submitted" || status === "streaming";
 
