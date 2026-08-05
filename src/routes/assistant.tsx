@@ -312,14 +312,14 @@ function AssistantPage() {
   return (
     <AppShell>
       <PageHeader
-        title="Pi Assist"
-        subtitle="Your AI banking agent — ask, and it does it for you"
+        title="AI Bots"
+        subtitle="Three agents that run the app's services for you"
         right={
           <button
             onClick={() => {
               setMessages([]);
               try {
-                window.localStorage.removeItem(STORAGE_KEY);
+                window.localStorage.removeItem(storageKey(agentId));
               } catch {
                 /* ignore */
               }
@@ -333,26 +333,58 @@ function AssistantPage() {
       />
       <SimBanner />
 
-      <div className="mx-5 flex h-[calc(100vh-15rem)] min-h-[26rem] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-lift">
+      <div className="mx-5 mb-3 grid grid-cols-3 gap-2" role="tablist" aria-label="Choose an AI bot">
+        {AGENT_IDS.map((id) => {
+          const a = AGENTS[id];
+          const active = id === agentId;
+          return (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setAgentId(id)}
+              className={`rounded-2xl border p-2 text-left transition ${
+                active
+                  ? "border-transparent text-primary-foreground shadow-lift"
+                  : "border-border bg-card text-foreground hover:border-primary"
+              }`}
+            >
+              <span
+                className={`block rounded-xl bg-gradient-to-br px-2 py-2 ${a.accent} ${
+                  active ? "" : "bg-none"
+                }`}
+              >
+                <span className="block text-[12px] font-semibold leading-tight">{a.name}</span>
+                <span
+                  className={`mt-0.5 block text-[10px] leading-tight ${
+                    active ? "opacity-90" : "text-muted-foreground"
+                  }`}
+                >
+                  {a.tagline}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mx-5 flex h-[calc(100vh-19rem)] min-h-[24rem] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-lift">
         <Conversation className="flex-1">
           <ConversationContent className="gap-4">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
                 <img
                   src={assistantLogo}
-                  alt="Pi Assist agent mark"
+                  alt={`${agent.name} agent mark`}
                   width={72}
                   height={72}
                   loading="lazy"
                   className="h-18 w-18"
                 />
-                <h2 className="text-base font-semibold">Hi, I'm Pi Assist</h2>
-                <p className="max-w-xs text-xs text-muted-foreground">
-                  I can explain any service and do it for you: transfers, bills, top-ups, deposits,
-                  international payments and central-bank rules for your country.
-                </p>
+                <h2 className="text-base font-semibold">Hi, I'm {agent.name}</h2>
+                <p className="max-w-xs text-xs text-muted-foreground">{agent.blurb}</p>
                 <div className="mt-2 flex flex-wrap justify-center gap-2">
-                  {SUGGESTIONS.map((s) => (
+                  {agent.suggestions.map((s) => (
                     <button
                       key={s}
                       onClick={() => ask(s)}
@@ -362,6 +394,9 @@ function AssistantPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+            ) : null}
+
               </div>
             ) : null}
 
