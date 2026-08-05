@@ -397,8 +397,7 @@ function AssistantPage() {
               </div>
             ) : null}
 
-              </div>
-            ) : null}
+
 
             {messages.map((message) => (
               <Message from={message.role} key={message.id}>
