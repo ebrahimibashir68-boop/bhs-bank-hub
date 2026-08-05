@@ -27,10 +27,14 @@ function toolsFor(names: AssistantToolName[]) {
   return Object.fromEntries(
     names.map((name) => [
       name,
-      tool({ description: DESCRIPTIONS[name], inputSchema: assistantToolSchemas[name] }),
+      tool({
+        description: DESCRIPTIONS[name],
+        inputSchema: assistantToolSchemas[name] as never,
+      }),
     ]),
   );
 }
+
 
 export const Route = createFileRoute("/api/chat")({
   server: {
