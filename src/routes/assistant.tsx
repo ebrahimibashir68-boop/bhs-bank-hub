@@ -27,7 +27,9 @@ import { Shimmer } from "@/components/ai-elements/shimmer";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, type CountryCode } from "@/lib/banking";
 import assistantLogo from "@/assets/pi-assist.png";
+import { AGENTS, AGENT_IDS, type AgentId } from "@/lib/agents";
 import { RotateCcw } from "lucide-react";
+
 
 export const Route = createFileRoute("/assistant")({
   head: () => ({
@@ -52,34 +54,49 @@ export const Route = createFileRoute("/assistant")({
   component: AssistantPage,
 });
 
-const STORAGE_KEY = "pi-assist-conversation-v1";
+const STORAGE_PREFIX = "pi-assist-conversation-v1";
+const AGENT_KEY = "pi-assist-agent-v1";
 
-const SUGGESTIONS = [
-  "What can you do for me?",
-  "Pay my electricity bill",
-  "Send 250 to my savings account",
-  "How much did I spend recently?",
-  "Explain the rules of my country's central bank",
-];
+function storageKey(agent: AgentId) {
+  return agent === "pi-assist" ? STORAGE_PREFIX : `${STORAGE_PREFIX}:${agent}`;
+}
 
-function loadMessages(): UIMessage[] {
+function loadMessages(agent: AgentId): UIMessage[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(storageKey(agent));
     return raw ? (JSON.parse(raw) as UIMessage[]) : [];
   } catch {
     return [];
   }
 }
 
+function loadAgent(): AgentId {
+  if (typeof window === "undefined") return "pi-assist";
+  const saved = window.localStorage.getItem(AGENT_KEY);
+  return (AGENT_IDS as readonly string[]).includes(saved ?? "") ? (saved as AgentId) : "pi-assist";
+}
+
 type ToolPart = ToolUIPart | DynamicToolUIPart;
 
 function AssistantPage() {
   const navigate = useNavigate();
-  const [initial] = useState<UIMessage[]>(() => loadMessages());
+  const [agentId, setAgentId] = useState<AgentId>(() => loadAgent());
+  const agent = AGENTS[agentId];
+  const [initialByAgent] = useState<Record<string, UIMessage[]>>(() =>
+    Object.fromEntries(AGENT_IDS.map((id) => [id, loadMessages(id)])),
+  );
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        body: { agent: agentId },
+      }),
+    [agentId],
+  );
+
 
   const runTool = useCallback(
     (name: string, input: Record<string, unknown>) => {
@@ -245,8 +262,8 @@ function AssistantPage() {
   );
 
   const { messages, sendMessage, status, addToolResult, setMessages } = useChat({
-    id: "pi-assist",
-    messages: initial,
+    id: agentId,
+    messages: initialByAgent[agentId] ?? [],
     transport,
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall: ({ toolCall }) => {
@@ -267,11 +284,13 @@ function AssistantPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      window.localStorage.setItem(AGENT_KEY, agentId);
+      window.localStorage.setItem(storageKey(agentId), JSON.stringify(messages));
     } catch {
       // storage full or unavailable — conversation stays in memory
     }
-  }, [messages]);
+  }, [messages, agentId]);
+
 
   const busy = status === "submitted" || status === "streaming";
 
@@ -293,14 +312,14 @@ function AssistantPage() {
   return (
     <AppShell>
       <PageHeader
-        title="Pi Assist"
-        subtitle="Your AI banking agent — ask, and it does it for you"
+        title="AI Bots"
+        subtitle="Three agents that run the app's services for you"
         right={
           <button
             onClick={() => {
               setMessages([]);
               try {
-                window.localStorage.removeItem(STORAGE_KEY);
+                window.localStorage.removeItem(storageKey(agentId));
               } catch {
                 /* ignore */
               }
@@ -314,26 +333,58 @@ function AssistantPage() {
       />
       <SimBanner />
 
-      <div className="mx-5 flex h-[calc(100vh-15rem)] min-h-[26rem] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-lift">
+      <div className="mx-5 mb-3 grid grid-cols-3 gap-2" role="tablist" aria-label="Choose an AI bot">
+        {AGENT_IDS.map((id) => {
+          const a = AGENTS[id];
+          const active = id === agentId;
+          return (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setAgentId(id)}
+              className={`rounded-2xl border p-2 text-left transition ${
+                active
+                  ? "border-transparent text-primary-foreground shadow-lift"
+                  : "border-border bg-card text-foreground hover:border-primary"
+              }`}
+            >
+              <span
+                className={`block rounded-xl bg-gradient-to-br px-2 py-2 ${a.accent} ${
+                  active ? "" : "bg-none"
+                }`}
+              >
+                <span className="block text-[12px] font-semibold leading-tight">{a.name}</span>
+                <span
+                  className={`mt-0.5 block text-[10px] leading-tight ${
+                    active ? "opacity-90" : "text-muted-foreground"
+                  }`}
+                >
+                  {a.tagline}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mx-5 flex h-[calc(100vh-19rem)] min-h-[24rem] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-lift">
         <Conversation className="flex-1">
           <ConversationContent className="gap-4">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
                 <img
                   src={assistantLogo}
-                  alt="Pi Assist agent mark"
+                  alt={`${agent.name} agent mark`}
                   width={72}
                   height={72}
                   loading="lazy"
                   className="h-18 w-18"
                 />
-                <h2 className="text-base font-semibold">Hi, I'm Pi Assist</h2>
-                <p className="max-w-xs text-xs text-muted-foreground">
-                  I can explain any service and do it for you: transfers, bills, top-ups, deposits,
-                  international payments and central-bank rules for your country.
-                </p>
+                <h2 className="text-base font-semibold">Hi, I'm {agent.name}</h2>
+                <p className="max-w-xs text-xs text-muted-foreground">{agent.blurb}</p>
                 <div className="mt-2 flex flex-wrap justify-center gap-2">
-                  {SUGGESTIONS.map((s) => (
+                  {agent.suggestions.map((s) => (
                     <button
                       key={s}
                       onClick={() => ask(s)}
@@ -345,6 +396,8 @@ function AssistantPage() {
                 </div>
               </div>
             ) : null}
+
+
 
             {messages.map((message) => (
               <Message from={message.role} key={message.id}>
