@@ -27,7 +27,9 @@ import { Shimmer } from "@/components/ai-elements/shimmer";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, type CountryCode } from "@/lib/banking";
 import assistantLogo from "@/assets/pi-assist.png";
+import { AGENTS, AGENT_IDS, type AgentId } from "@/lib/agents";
 import { RotateCcw } from "lucide-react";
+
 
 export const Route = createFileRoute("/assistant")({
   head: () => ({
