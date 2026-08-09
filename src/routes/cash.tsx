@@ -57,7 +57,11 @@ function Cash() {
             <Check className="h-7 w-7" />
           </div>
           <div className="text-lg font-semibold">{formatMoney(amt, fromAcct?.currency ?? country.currency)}</div>
+          <div className="text-sm font-medium text-violet-600">
+            {formatPi(piPayable(amt, fromAcct?.currency ?? country.currency))} settlement value
+          </div>
           <div className="mt-1 text-sm text-muted-foreground">{tab === "deposit" ? "Funds available immediately." : "Collect cash at the ATM."}</div>
+
           <Link to="/" className="mt-5 inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Done</Link>
         </div>
       </AppShell>
