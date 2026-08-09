@@ -2,8 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, type Biller } from "@/lib/banking";
+import { formatPi, piPayable } from "@/lib/pi-settlement";
+import { usePiPayment } from "@/hooks/usePiPayment";
+import { PiSettleNotice } from "@/components/PiSettleNotice";
 import { useState } from "react";
 import { Check } from "lucide-react";
+
 
 export const Route = createFileRoute("/bills")({
   head: () => ({
