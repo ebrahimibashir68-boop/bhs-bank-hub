@@ -39,9 +39,16 @@ function Topup() {
   const fromAcct = accounts.find((a) => a.id === acct);
   const op = operators.find((o) => o.id === operator);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fromAcct || !op || amount <= 0) return;
+    if (!fromAcct || !op || amount <= 0 || piPay.pending) return;
+    const pi = piPayable(amount, fromAcct.currency);
+    const settled = await piPay.pay({
+      amount: pi,
+      memo: `${op.name} top-up ${phone}`,
+      metadata: { kind: "topup", operator: op.id, phone, amount, currency: fromAcct.currency },
+    });
+    if (!settled) return;
     adjustBalance(fromAcct.id, -amount);
     addTxn({
       accountId: fromAcct.id,
@@ -49,10 +56,11 @@ function Topup() {
       category: "Mobile",
       amount: -amount,
       currency: fromAcct.currency,
-      channel: "Airtime",
+      channel: `Airtime · Pi ${formatPi(pi)}`,
     });
     setDone(true);
   }
+
 
   if (done) {
     return (
