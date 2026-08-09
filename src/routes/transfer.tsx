@@ -183,13 +183,20 @@ function Transfer() {
           </div>
         ) : null}
 
+        <PiSettleNotice
+          pi={piPayable(amt, fromAcct?.currency ?? country.currency)}
+          status={piPay.status}
+          pending={piPay.pending}
+        />
+
         <button
           type="submit"
-          disabled={!from || !to || amt <= 0 || overLimit || !acctCheck.valid || screening.status === "blocked"}
+          disabled={!from || !to || amt <= 0 || overLimit || !acctCheck.valid || screening.status === "blocked" || piPay.pending}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
-          Send {formatMoney(amt, fromAcct?.currency ?? country.currency)} <ArrowRight className="h-4 w-4" />
+          Pay {formatPi(piPayable(amt, fromAcct?.currency ?? country.currency))} <ArrowRight className="h-4 w-4" />
         </button>
+
       </form>
       <style>{`
         .input{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem;outline:none}
