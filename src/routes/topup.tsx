@@ -113,9 +113,15 @@ function Topup() {
             ))}
           </div>
         </div>
-        <button className="w-full rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50" disabled={!phone || amount <= 0}>
-          Top up
+        <PiSettleNotice
+          pi={piPayable(amount, fromAcct?.currency ?? country.currency)}
+          status={piPay.status}
+          pending={piPay.pending}
+        />
+        <button className="w-full rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50" disabled={!phone || amount <= 0 || piPay.pending}>
+          Top up · {formatPi(piPayable(amount, fromAcct?.currency ?? country.currency))}
         </button>
+
       </form>
       <style>{`.input{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}.select{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}`}</style>
     </AppShell>
