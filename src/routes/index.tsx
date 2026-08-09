@@ -112,11 +112,15 @@ function Home() {
           </div>
 
           <div className="mt-3 text-4xl font-semibold tracking-tight">
-            {hide ? "•••••••" : formatMoney(totalLocal, country.currency)}
+            {hide ? "•••••••" : formatPi(toPi(totalLocal, country.currency), 2)}
+          </div>
+          <div className="mt-1 text-sm opacity-90">
+            {hide ? "•••••" : formatMoney(totalLocal, country.currency)}
           </div>
           <div className="mt-1.5 text-xs opacity-85">
-            {countryAccounts.length} account{countryAccounts.length === 1 ? "" : "s"} • {country.flag} {country.name}
+            {countryAccounts.length} account{countryAccounts.length === 1 ? "" : "s"} • {country.flag} {country.name} • settles in Pi
           </div>
+
 
           <div className="mt-4 flex flex-wrap gap-1.5 text-[10px]">
             {country.rails.slice(0, 3).map((r) => (
