@@ -211,7 +211,11 @@ function Home() {
                   <div className="text-[11px] text-muted-foreground">{a.number} · {a.type}</div>
                 </div>
               </div>
-              <div className="text-sm font-semibold">{hide ? "•••" : formatMoney(a.balance, a.currency)}</div>
+              <div className="text-right">
+                <div className="text-sm font-semibold">{hide ? "•••" : formatMoney(a.balance, a.currency)}</div>
+                <div className="text-[11px] text-violet-600">{hide ? "•••" : formatPi(toPi(a.balance, a.currency), 2)}</div>
+              </div>
+
             </div>
           ))}
         </div>
