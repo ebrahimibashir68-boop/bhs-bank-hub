@@ -38,6 +38,8 @@ function Topup() {
   const [done, setDone] = useState(false);
   const fromAcct = accounts.find((a) => a.id === acct);
   const op = operators.find((o) => o.id === operator);
+  const piPay = usePiPayment();
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
