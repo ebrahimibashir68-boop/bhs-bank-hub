@@ -4,6 +4,7 @@ import { CountrySwitcher } from "@/components/CountrySwitcher";
 import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
+import { formatPi, toPi } from "@/lib/pi-settlement";
 import {
   ArrowLeftRight, Receipt, Banknote, Smartphone, Globe2, Sparkles, Eye, EyeOff, Settings, Bot,
   ShieldCheck, Landmark, Users, ArrowUpRight, BookOpen,
