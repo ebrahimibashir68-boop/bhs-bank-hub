@@ -48,6 +48,8 @@ function Transfer() {
   const [remittance, setRemittance] = useState("");
   const [receipt, setReceipt] = useState<{ uetr: string; endToEndId: string; valueDate: string } | null>(null);
   const bank = BANK_IDENTITY[activeCountry];
+  const piPay = usePiPayment();
+
 
   const fromAcct = accounts.find((a) => a.id === from);
   const amt = parseFloat(amount) || 0;
