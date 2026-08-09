@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney } from "@/lib/banking";
+import { formatPi, piPayable } from "@/lib/pi-settlement";
 import { useState } from "react";
 import { Banknote, ArrowDownToLine, ArrowUpFromLine, Check } from "lucide-react";
 
