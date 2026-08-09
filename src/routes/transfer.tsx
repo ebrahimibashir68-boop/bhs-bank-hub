@@ -100,8 +100,11 @@ function Transfer() {
           <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600">
             <Check className="h-7 w-7" />
           </div>
-          <div className="text-lg font-semibold">{formatMoney(amt, fromAcct?.currency ?? country.currency)}</div>
-          <div className="mt-1 text-sm text-muted-foreground">to {name || to} via {rail}</div>
+          <div className="text-lg font-semibold">{formatPi(piPayable(amt, fromAcct?.currency ?? country.currency))}</div>
+          <div className="mt-1 text-sm text-muted-foreground">
+            {formatMoney(amt, fromAcct?.currency ?? country.currency)} · to {name || to} via {rail}
+          </div>
+
           <dl className="mt-4 space-y-1 rounded-md bg-muted/50 p-3 text-left text-[11px]">
             <div className="flex justify-between gap-3"><span className="text-muted-foreground">Message</span><span className="text-right">{msgType.iso}</span></div>
             <div className="flex justify-between gap-3"><span className="text-muted-foreground">UETR</span><span className="break-all text-right font-mono">{receipt.uetr}</span></div>
