@@ -4,6 +4,7 @@ import { CountrySwitcher } from "@/components/CountrySwitcher";
 import { PiSignInBar } from "@/components/PiSignInBar";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, convert } from "@/lib/banking";
+import { formatPi, toPi } from "@/lib/pi-settlement";
 import {
   ArrowLeftRight, Receipt, Banknote, Smartphone, Globe2, Sparkles, Eye, EyeOff, Settings, Bot,
   ShieldCheck, Landmark, Users, ArrowUpRight, BookOpen,
@@ -112,11 +113,15 @@ function Home() {
           </div>
 
           <div className="mt-3 text-4xl font-semibold tracking-tight">
-            {hide ? "•••••••" : formatMoney(totalLocal, country.currency)}
+            {hide ? "•••••••" : formatPi(toPi(totalLocal, country.currency), 2)}
+          </div>
+          <div className="mt-1 text-sm opacity-90">
+            {hide ? "•••••" : formatMoney(totalLocal, country.currency)}
           </div>
           <div className="mt-1.5 text-xs opacity-85">
-            {countryAccounts.length} account{countryAccounts.length === 1 ? "" : "s"} • {country.flag} {country.name}
+            {countryAccounts.length} account{countryAccounts.length === 1 ? "" : "s"} • {country.flag} {country.name} • settles in Pi
           </div>
+
 
           <div className="mt-4 flex flex-wrap gap-1.5 text-[10px]">
             {country.rails.slice(0, 3).map((r) => (
@@ -206,7 +211,11 @@ function Home() {
                   <div className="text-[11px] text-muted-foreground">{a.number} · {a.type}</div>
                 </div>
               </div>
-              <div className="text-sm font-semibold">{hide ? "•••" : formatMoney(a.balance, a.currency)}</div>
+              <div className="text-right">
+                <div className="text-sm font-semibold">{hide ? "•••" : formatMoney(a.balance, a.currency)}</div>
+                <div className="text-[11px] text-violet-600">{hide ? "•••" : formatPi(toPi(a.balance, a.currency), 2)}</div>
+              </div>
+
             </div>
           ))}
         </div>

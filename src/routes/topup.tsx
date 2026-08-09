@@ -4,6 +4,10 @@ import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney } from "@/lib/banking";
 import { useState } from "react";
 import { Check, Smartphone } from "lucide-react";
+import { formatPi, piPayable } from "@/lib/pi-settlement";
+import { usePiPayment } from "@/hooks/usePiPayment";
+import { PiSettleNotice } from "@/components/PiSettleNotice";
+
 
 export const Route = createFileRoute("/topup")({
   head: () => ({
@@ -34,10 +38,19 @@ function Topup() {
   const [done, setDone] = useState(false);
   const fromAcct = accounts.find((a) => a.id === acct);
   const op = operators.find((o) => o.id === operator);
+  const piPay = usePiPayment();
 
-  function submit(e: React.FormEvent) {
+
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fromAcct || !op || amount <= 0) return;
+    if (!fromAcct || !op || amount <= 0 || piPay.pending) return;
+    const pi = piPayable(amount, fromAcct.currency);
+    const settled = await piPay.pay({
+      amount: pi,
+      memo: `${op.name} top-up ${phone}`,
+      metadata: { kind: "topup", operator: op.id, phone, amount, currency: fromAcct.currency },
+    });
+    if (!settled) return;
     adjustBalance(fromAcct.id, -amount);
     addTxn({
       accountId: fromAcct.id,
@@ -45,10 +58,11 @@ function Topup() {
       category: "Mobile",
       amount: -amount,
       currency: fromAcct.currency,
-      channel: "Airtime",
+      channel: `Airtime · Pi ${formatPi(pi)}`,
     });
     setDone(true);
   }
+
 
   if (done) {
     return (
@@ -99,9 +113,15 @@ function Topup() {
             ))}
           </div>
         </div>
-        <button className="w-full rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50" disabled={!phone || amount <= 0}>
-          Top up
+        <PiSettleNotice
+          pi={piPayable(amount, fromAcct?.currency ?? country.currency)}
+          status={piPay.status}
+          pending={piPay.pending}
+        />
+        <button className="w-full rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50" disabled={!phone || amount <= 0 || piPay.pending}>
+          Top up · {formatPi(piPayable(amount, fromAcct?.currency ?? country.currency))}
         </button>
+
       </form>
       <style>{`.input{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}.select{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}`}</style>
     </AppShell>

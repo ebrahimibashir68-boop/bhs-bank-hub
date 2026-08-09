@@ -42,7 +42,7 @@ export const Route = createFileRoute("/guide")({
 
 function Guide() {
   return (
-    <AppShell>
+    <AppShell publicPage>
       <PageHeader
         title="Pi Network Banking & Compliance Guide"
         subtitle="How Pi bridges the Pi ecosystem and regulated banking"

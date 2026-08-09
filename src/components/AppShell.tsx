@@ -1,6 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, ArrowLeftRight, Bot, Globe2, User } from "lucide-react";
 import type { ReactNode } from "react";
+import { usePiAuth } from "@/components/PiAuthProvider";
+import { PiGate } from "@/components/PiGate";
+import { PiComplianceFooter } from "@/components/PiComplianceFooter";
 
 const TABS = [
   { to: "/", label: "Home", icon: Home },
@@ -10,12 +13,24 @@ const TABS = [
   { to: "/more", label: "More", icon: User },
 ] as const;
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({
+  children,
+  publicPage = false,
+}: {
+  children: ReactNode;
+  publicPage?: boolean;
+}) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const { session } = usePiAuth();
+  const locked = !publicPage && !session;
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-md flex-col">
-        <main className="flex-1 pb-24">{children}</main>
+        <main className="flex-1 pb-24">
+          {locked ? <PiGate /> : children}
+          <PiComplianceFooter />
+        </main>
+
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md border-t border-border bg-card/95 backdrop-blur">
           <ul className="grid grid-cols-5">
             {TABS.map(({ to, label, icon: Icon }) => {

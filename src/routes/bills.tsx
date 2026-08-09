@@ -2,8 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, PageHeader, SimBanner } from "@/components/AppShell";
 import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney, type Biller } from "@/lib/banking";
+import { formatPi, piPayable } from "@/lib/pi-settlement";
+import { usePiPayment } from "@/hooks/usePiPayment";
+import { PiSettleNotice } from "@/components/PiSettleNotice";
 import { useState } from "react";
 import { Check } from "lucide-react";
+
 
 export const Route = createFileRoute("/bills")({
   head: () => ({
@@ -28,13 +32,21 @@ function Bills() {
   const [account, setAccount] = useState("");
   const [amount, setAmount] = useState("");
   const [from, setFrom] = useState(own[0]?.id ?? "");
-  const [done, setDone] = useState<Biller | null>(null);
+  const [done, setDone] = useState<{ biller: Biller; pi: number } | null>(null);
+  const piPay = usePiPayment();
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const fromAcct = accounts.find((a) => a.id === from);
     const amt = parseFloat(amount) || 0;
-    if (!biller || !fromAcct || amt <= 0) return;
+    if (!biller || !fromAcct || amt <= 0 || piPay.pending) return;
+    const pi = piPayable(amt, fromAcct.currency);
+    const settled = await piPay.pay({
+      amount: pi,
+      memo: `${biller.name} bill payment`,
+      metadata: { kind: "bill", billerId: biller.id, country: activeCountry, amount: amt, currency: fromAcct.currency },
+    });
+    if (!settled) return;
     adjustBalance(fromAcct.id, -amt);
     addTxn({
       accountId: fromAcct.id,
@@ -42,13 +54,14 @@ function Bills() {
       category: "Utilities",
       amount: -amt,
       currency: fromAcct.currency,
-      channel: "Bill Pay",
+      channel: `Bill Pay · Pi ${formatPi(pi)}`,
     });
-    setDone(biller);
+    setDone({ biller, pi });
     setBiller(null);
     setAmount("");
     setAccount("");
   }
+
 
   if (done) {
     return (
@@ -58,8 +71,11 @@ function Bills() {
           <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600">
             <Check className="h-7 w-7" />
           </div>
-          <div className="text-lg font-semibold">{done.name}</div>
-          <div className="mt-1 text-sm text-muted-foreground">Receipt sent to your email.</div>
+          <div className="text-lg font-semibold">{done.biller.name}</div>
+          <div className="mt-1 text-sm text-muted-foreground">
+            Settled {formatPi(done.pi)} on the Pi Network.
+          </div>
+
           <button onClick={() => setDone(null)} className="mt-5 w-full rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground">
             Pay another bill
           </button>
@@ -85,10 +101,18 @@ function Bills() {
           <Field label={`Amount (${fromAcct?.currency ?? country.currency})`}>
             <input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" inputMode="decimal" placeholder="0.00" className="input text-lg" />
           </Field>
+          <PiSettleNotice
+            pi={piPayable(parseFloat(amount) || 0, fromAcct?.currency ?? country.currency)}
+            status={piPay.status}
+            pending={piPay.pending}
+          />
           <div className="flex gap-2">
             <button type="button" onClick={() => setBiller(null)} className="flex-1 rounded-md border border-border py-2.5 text-sm">Back</button>
-            <button type="submit" className="flex-1 rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground">Pay</button>
+            <button type="submit" disabled={piPay.pending} className="flex-1 rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50">
+              Pay {formatPi(piPayable(parseFloat(amount) || 0, fromAcct?.currency ?? country.currency))}
+            </button>
           </div>
+
         </form>
         <style>{`.input{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}.select{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}`}</style>
       </AppShell>
