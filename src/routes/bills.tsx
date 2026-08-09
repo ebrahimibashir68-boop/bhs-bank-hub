@@ -71,8 +71,11 @@ function Bills() {
           <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600">
             <Check className="h-7 w-7" />
           </div>
-          <div className="text-lg font-semibold">{done.name}</div>
-          <div className="mt-1 text-sm text-muted-foreground">Receipt sent to your email.</div>
+          <div className="text-lg font-semibold">{done.biller.name}</div>
+          <div className="mt-1 text-sm text-muted-foreground">
+            Settled {formatPi(done.pi)} on the Pi Network.
+          </div>
+
           <button onClick={() => setDone(null)} className="mt-5 w-full rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground">
             Pay another bill
           </button>
