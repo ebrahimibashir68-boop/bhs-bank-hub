@@ -101,10 +101,18 @@ function Bills() {
           <Field label={`Amount (${fromAcct?.currency ?? country.currency})`}>
             <input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" inputMode="decimal" placeholder="0.00" className="input text-lg" />
           </Field>
+          <PiSettleNotice
+            pi={piPayable(parseFloat(amount) || 0, fromAcct?.currency ?? country.currency)}
+            status={piPay.status}
+            pending={piPay.pending}
+          />
           <div className="flex gap-2">
             <button type="button" onClick={() => setBiller(null)} className="flex-1 rounded-md border border-border py-2.5 text-sm">Back</button>
-            <button type="submit" className="flex-1 rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground">Pay</button>
+            <button type="submit" disabled={piPay.pending} className="flex-1 rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50">
+              Pay {formatPi(piPayable(parseFloat(amount) || 0, fromAcct?.currency ?? country.currency))}
+            </button>
           </div>
+
         </form>
         <style>{`.input{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}.select{width:100%;border:1px solid var(--color-border);background:var(--color-card);border-radius:.5rem;padding:.65rem .75rem;font-size:.875rem}`}</style>
       </AppShell>
