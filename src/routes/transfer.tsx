@@ -15,6 +15,10 @@ import {
 } from "@/lib/iso20022";
 import { useMemo, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
+import { formatPi, piPayable } from "@/lib/pi-settlement";
+import { usePiPayment } from "@/hooks/usePiPayment";
+import { PiSettleNotice } from "@/components/PiSettleNotice";
+
 
 export const Route = createFileRoute("/transfer")({
   head: () => ({
@@ -63,9 +67,16 @@ function Transfer() {
     [name, amt, fromAcct, country.currency, activeCountry],
   );
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fromAcct || amt <= 0 || overLimit || screening.status === "blocked") return;
+    if (!fromAcct || amt <= 0 || overLimit || screening.status === "blocked" || piPay.pending) return;
+    const pi = piPayable(amt, fromAcct.currency);
+    const settled = await piPay.pay({
+      amount: pi,
+      memo: `Transfer to ${name || to} via ${rail}`,
+      metadata: { kind: "transfer", rail, country: activeCountry, amount: amt, currency: fromAcct.currency },
+    });
+    if (!settled) return;
     adjustBalance(fromAcct.id, -amt);
     addTxn({
       accountId: fromAcct.id,
@@ -73,10 +84,11 @@ function Transfer() {
       category: "Transfer",
       amount: -amt,
       currency: fromAcct.currency,
-      channel: rail,
+      channel: `${rail} · Pi ${formatPi(pi)}`,
     });
     setReceipt({ uetr: generateUetr(), endToEndId: generateEndToEndId(), valueDate: isoDate(new Date()) });
   }
+
 
   if (receipt) {
     return (
