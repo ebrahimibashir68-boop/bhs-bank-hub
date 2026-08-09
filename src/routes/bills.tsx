@@ -32,13 +32,21 @@ function Bills() {
   const [account, setAccount] = useState("");
   const [amount, setAmount] = useState("");
   const [from, setFrom] = useState(own[0]?.id ?? "");
-  const [done, setDone] = useState<Biller | null>(null);
+  const [done, setDone] = useState<{ biller: Biller; pi: number } | null>(null);
+  const piPay = usePiPayment();
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const fromAcct = accounts.find((a) => a.id === from);
     const amt = parseFloat(amount) || 0;
-    if (!biller || !fromAcct || amt <= 0) return;
+    if (!biller || !fromAcct || amt <= 0 || piPay.pending) return;
+    const pi = piPayable(amt, fromAcct.currency);
+    const settled = await piPay.pay({
+      amount: pi,
+      memo: `${biller.name} bill payment`,
+      metadata: { kind: "bill", billerId: biller.id, country: activeCountry, amount: amt, currency: fromAcct.currency },
+    });
+    if (!settled) return;
     adjustBalance(fromAcct.id, -amt);
     addTxn({
       accountId: fromAcct.id,
@@ -46,13 +54,14 @@ function Bills() {
       category: "Utilities",
       amount: -amt,
       currency: fromAcct.currency,
-      channel: "Bill Pay",
+      channel: `Bill Pay · Pi ${formatPi(pi)}`,
     });
-    setDone(biller);
+    setDone({ biller, pi });
     setBiller(null);
     setAmount("");
     setAccount("");
   }
+
 
   if (done) {
     return (
