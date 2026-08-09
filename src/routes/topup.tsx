@@ -4,6 +4,10 @@ import { useBank } from "@/lib/store";
 import { COUNTRIES, formatMoney } from "@/lib/banking";
 import { useState } from "react";
 import { Check, Smartphone } from "lucide-react";
+import { formatPi, piPayable } from "@/lib/pi-settlement";
+import { usePiPayment } from "@/hooks/usePiPayment";
+import { PiSettleNotice } from "@/components/PiSettleNotice";
+
 
 export const Route = createFileRoute("/topup")({
   head: () => ({
