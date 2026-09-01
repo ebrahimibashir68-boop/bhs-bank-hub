@@ -8,6 +8,7 @@ import { useState } from "react";
 import { usePiAuth } from "@/components/PiAuthProvider";
 import { getPi } from "@/lib/pi-sdk";
 import { approvePiPayment, completePiPayment } from "@/lib/pi-auth.functions";
+import { PiEcosystemPanel } from "@/components/PiEcosystemPanel";
 
 export const Route = createFileRoute("/pi")({
   head: () => ({
@@ -195,6 +196,8 @@ function Pi() {
         ) : null}
       </section>
 
+
+      <PiEcosystemPanel />
 
       <section className="mx-5 mt-6">
         <h2 className="mb-2 text-sm font-semibold">Pi activity</h2>
