@@ -1,4 +1,5 @@
 import { usePiAuth } from "./PiAuthProvider";
+import { PI_SANDBOX, PI_SDK_VERSION } from "@/lib/pi-sdk";
 
 /**
  * Pi ecosystem compliance surface — shown under every page so the Pi
