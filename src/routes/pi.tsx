@@ -8,6 +8,7 @@ import { useState } from "react";
 import { usePiAuth } from "@/components/PiAuthProvider";
 import { getPi } from "@/lib/pi-sdk";
 import { approvePiPayment, completePiPayment } from "@/lib/pi-auth.functions";
+import { PiEcosystemPanel } from "@/components/PiEcosystemPanel";
 
 export const Route = createFileRoute("/pi")({
   head: () => ({
