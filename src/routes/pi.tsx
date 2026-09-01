@@ -196,6 +196,8 @@ function Pi() {
       </section>
 
 
+      <PiEcosystemPanel />
+
       <section className="mx-5 mt-6">
         <h2 className="mb-2 text-sm font-semibold">Pi activity</h2>
         <div className="overflow-hidden rounded-xl border border-border bg-card">
