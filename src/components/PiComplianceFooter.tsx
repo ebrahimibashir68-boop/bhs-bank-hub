@@ -9,9 +9,13 @@ export function PiComplianceFooter() {
   return (
     <footer className="mx-5 mt-8 mb-4 rounded-xl border border-border bg-card/60 p-3 text-[10px] leading-relaxed text-muted-foreground">
       <div className="flex flex-wrap gap-1.5">
-        <Badge>Pi SDK 2.0</Badge>
-        <Badge>Pi Mainnet</Badge>
+        <Badge>Pi SDK {PI_SDK_VERSION}</Badge>
+        <Badge>{PI_SANDBOX ? "Pi Testnet" : "Pi Mainnet"}</Badge>
         <Badge>π settlement</Badge>
+        <Badge>Platform API v2</Badge>
+        <Badge>U2A approve/complete</Badge>
+        <Badge>Incomplete-payment recovery</Badge>
+        <Badge>Ad Network verified</Badge>
         <Badge>PiNet metadata</Badge>
         <Badge>Validation key published</Badge>
       </div>
