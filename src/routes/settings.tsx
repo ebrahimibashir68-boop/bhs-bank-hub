@@ -126,6 +126,18 @@ function SettingsPage() {
                   Connected
                 </span>
               </div>
+              <div className="mt-2 rounded-md border border-border bg-background/60 px-2 py-1.5">
+                <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Pi Ecosystem Wallet</div>
+                {session.walletAddress ? (
+                  <div className="mt-0.5 break-all font-mono text-[11px] font-medium">
+                    {session.walletAddress.slice(0, 10)}…{session.walletAddress.slice(-6)}
+                  </div>
+                ) : (
+                  <div className="mt-0.5 text-[11px] text-muted-foreground">
+                    Not linked — grant the wallet_address scope
+                  </div>
+                )}
+              </div>
               <div className="mt-2 text-[11px] text-muted-foreground">
                 Scopes: {scopes.length ? scopes.join(", ") : "—"}
               </div>
@@ -134,8 +146,16 @@ function SettingsPage() {
               <Link to="/pi" className="flex-1 rounded-md bg-violet-600 px-3 py-2 text-center text-xs font-medium text-white">
                 Open Pi Wallet
               </Link>
+              {!session.walletAddress || !scopes.includes("wallet_address") ? (
+                <button
+                  onClick={() => void signIn(["username", "payments", "wallet_address"])}
+                  className="flex-1 rounded-md bg-fuchsia-600 px-3 py-2 text-xs font-medium text-white"
+                >
+                  Link wallet address
+                </button>
+              ) : null}
               <button
-                onClick={() => void signIn(["username", "payments"])}
+                onClick={() => void signIn(["username", "payments", "wallet_address"])}
                 className="flex-1 rounded-md border border-border px-3 py-2 text-xs font-medium"
               >
                 Re-authorize
@@ -154,7 +174,7 @@ function SettingsPage() {
               Connect your Pi wallet to send/receive Pi and pay app fees. Open this app inside the Pi Browser.
             </p>
             <button
-              onClick={() => void signIn(["username", "payments"])}
+              onClick={() => void signIn(["username", "payments", "wallet_address"])}
               disabled={status === "loading"}
               className="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
             >

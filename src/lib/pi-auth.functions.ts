@@ -28,10 +28,16 @@ interface SessionPayload {
   uid: string;
   username: string;
   scopes: string[];
+  walletAddress?: string | null;
   exp: number;
 }
 
-function signSession(payload: { uid: string; username: string; scopes: string[] }): string {
+function signSession(payload: {
+  uid: string;
+  username: string;
+  scopes: string[];
+  walletAddress?: string | null;
+}): string {
   const body: SessionPayload = {
     ...payload,
     exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS,
@@ -111,6 +117,7 @@ async function piFail(label: string, res: Response, userMessage: string): Promis
 interface UserDTO {
   uid: string;
   username?: string;
+  wallet_address?: string | null;
   credentials?: { scopes?: string[]; valid_until?: { timestamp: number; iso8601: string } };
 }
 
@@ -131,13 +138,18 @@ export const verifyPiAccessToken = createServerFn({ method: "POST" })
     // Scopes are authoritative from the Pi Platform API, not from the client.
     const scopes = me.credentials?.scopes ?? [];
     const username = me.username ?? me.uid;
-    const token = signSession({ uid: me.uid, username, scopes });
+    const walletAddress =
+      typeof me.wallet_address === "string" && me.wallet_address.length > 0
+        ? me.wallet_address
+        : null;
+    const token = signSession({ uid: me.uid, username, scopes, walletAddress });
     setSessionCookie(token);
     return {
       verified: true as const,
       uid: me.uid,
       username,
       scopes,
+      walletAddress,
       validUntil: me.credentials?.valid_until?.iso8601 ?? null,
       verifiedAt: new Date().toISOString(),
     };
@@ -151,6 +163,7 @@ export const getPiSession = createServerFn({ method: "GET" }).handler(async () =
     uid: s.uid,
     username: s.username,
     scopes: s.scopes,
+    walletAddress: s.walletAddress ?? null,
     expiresAt: new Date(s.exp * 1000).toISOString(),
   };
 });
