@@ -44,7 +44,7 @@ export function usePiPayment() {
         return null;
       }
       if (!session || !hasScope("payments")) {
-        const r = await signIn(["username", "payments"]);
+        const r = await signIn(["username", "payments", "wallet_address"]);
         if (!r || !r.scopes.includes("payments")) {
           setStatus('The "payments" scope is required to settle in Pi.');
           return null;
@@ -57,7 +57,16 @@ export function usePiPayment() {
         const Pi = await getPi();
         return await new Promise<PiPaymentResult | null>((resolve, reject) => {
           Pi.createPayment(
-            { amount, memo: req.memo.slice(0, 100), metadata: req.metadata },
+            {
+              amount,
+              memo: req.memo.slice(0, 100),
+              metadata: {
+                ...req.metadata,
+                // Tie the transaction to the connected Pi Ecosystem Wallet.
+                wallet_address: session?.walletAddress ?? null,
+                payer_uid: session?.uid ?? null,
+              },
+            },
             {
               onReadyForServerApproval: async (paymentId) => {
                 currentId = paymentId;
