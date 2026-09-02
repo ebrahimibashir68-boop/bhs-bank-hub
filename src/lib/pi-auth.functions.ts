@@ -117,6 +117,7 @@ async function piFail(label: string, res: Response, userMessage: string): Promis
 interface UserDTO {
   uid: string;
   username?: string;
+  wallet_address?: string | null;
   credentials?: { scopes?: string[]; valid_until?: { timestamp: number; iso8601: string } };
 }
 
