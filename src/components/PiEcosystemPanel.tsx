@@ -54,6 +54,14 @@ export function PiEcosystemPanel() {
         <Info label="SDK version" value={PI_SDK_VERSION} />
         <Info label="Network" value={PI_SANDBOX ? "Pi Testnet (sandbox)" : "Pi Mainnet"} />
         <Info label="Session" value={session ? `@${session.username}` : "signed out"} />
+        <Info
+          label="Wallet"
+          value={
+            session?.walletAddress
+              ? `${session.walletAddress.slice(0, 8)}…${session.walletAddress.slice(-4)}`
+              : "not linked"
+          }
+        />
         <Info label="Scopes" value={scopes.join(", ") || "—"} />
         <Info
           label="Native features"

@@ -174,7 +174,7 @@ function SettingsPage() {
               Connect your Pi wallet to send/receive Pi and pay app fees. Open this app inside the Pi Browser.
             </p>
             <button
-              onClick={() => void signIn(["username", "payments"])}
+              onClick={() => void signIn(["username", "payments", "wallet_address"])}
               disabled={status === "loading"}
               className="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
             >
