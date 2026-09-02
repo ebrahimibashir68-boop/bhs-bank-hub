@@ -28,10 +28,16 @@ interface SessionPayload {
   uid: string;
   username: string;
   scopes: string[];
+  walletAddress?: string | null;
   exp: number;
 }
 
-function signSession(payload: { uid: string; username: string; scopes: string[] }): string {
+function signSession(payload: {
+  uid: string;
+  username: string;
+  scopes: string[];
+  walletAddress?: string | null;
+}): string {
   const body: SessionPayload = {
     ...payload,
     exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS,
