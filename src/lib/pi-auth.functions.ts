@@ -138,13 +138,18 @@ export const verifyPiAccessToken = createServerFn({ method: "POST" })
     // Scopes are authoritative from the Pi Platform API, not from the client.
     const scopes = me.credentials?.scopes ?? [];
     const username = me.username ?? me.uid;
-    const token = signSession({ uid: me.uid, username, scopes });
+    const walletAddress =
+      typeof me.wallet_address === "string" && me.wallet_address.length > 0
+        ? me.wallet_address
+        : null;
+    const token = signSession({ uid: me.uid, username, scopes, walletAddress });
     setSessionCookie(token);
     return {
       verified: true as const,
       uid: me.uid,
       username,
       scopes,
+      walletAddress,
       validUntil: me.credentials?.valid_until?.iso8601 ?? null,
       verifiedAt: new Date().toISOString(),
     };
