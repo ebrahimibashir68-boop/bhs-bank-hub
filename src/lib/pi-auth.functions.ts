@@ -163,6 +163,7 @@ export const getPiSession = createServerFn({ method: "GET" }).handler(async () =
     uid: s.uid,
     username: s.username,
     scopes: s.scopes,
+    walletAddress: s.walletAddress ?? null,
     expiresAt: new Date(s.exp * 1000).toISOString(),
   };
 });
