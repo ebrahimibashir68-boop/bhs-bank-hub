@@ -28,6 +28,8 @@ export interface PiSession {
   username: string;
   verifiedAt: string;
   expiresAt?: string | null;
+  /** Mainnet wallet address granted via the "wallet_address" scope, if any. */
+  walletAddress?: string | null;
 }
 
 interface PiAuthCtx {
@@ -78,6 +80,7 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
           username: verified.username,
           verifiedAt: verified.verifiedAt,
           expiresAt: verified.validUntil,
+          walletAddress: verified.walletAddress ?? null,
         });
         // Trust the Platform API's granted scopes over the requested list.
         const granted = verified.scopes.length ? verified.scopes : auth.scopes;
@@ -123,6 +126,7 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
             username: existing.username,
             verifiedAt: new Date().toISOString(),
             expiresAt: existing.expiresAt,
+            walletAddress: existing.walletAddress ?? null,
           });
           setScopes(existing.scopes?.length ? existing.scopes : readGrantedScopes());
           setStatus("ready");
