@@ -50,6 +50,32 @@ function Guide() {
       />
 
       <article className="mx-5 mt-2 space-y-6 pb-6 text-sm leading-relaxed text-foreground">
+        <section className="rounded-2xl border border-violet-300/40 bg-gradient-to-br from-violet-600/10 to-fuchsia-500/10 p-3">
+          <h2 className="mb-2 flex items-center gap-2 text-base font-semibold">
+            <PlayCircle className="h-4 w-4 text-violet-600" /> Video guide: how Pi Bank works
+          </h2>
+          <video
+            src={guideVideo.url}
+            controls
+            playsInline
+            preload="metadata"
+            className="w-full rounded-xl border border-border bg-black"
+          >
+            Your browser does not support embedded video.
+          </video>
+          <p className="mt-2 text-[12px] text-muted-foreground">
+            A narrated 1:50 walkthrough — connecting your Pi Wallet, balances, transfers, bills,
+            international payments, the AI helpers, and settings.
+          </p>
+          <a
+            href={guideVideo.url}
+            download="pi-bank-guide.mp4"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-violet-600 px-3 py-2 text-xs font-medium text-white"
+          >
+            <Download className="h-3.5 w-3.5" /> Download the video
+          </a>
+        </section>
+
         <section>
           <h2 className="mb-2 flex items-center gap-2 text-base font-semibold">
             <Sparkles className="h-4 w-4 text-primary" /> Is Pi Network legit?
