@@ -1,5 +1,5 @@
 {
-  "name": "remotion",
+  "name": "pi-bank-video",
   "private": true,
   "devDependencies": {
     "@types/bun": "latest"
