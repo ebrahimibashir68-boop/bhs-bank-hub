@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PageHeader } from "@/components/AppShell";
 import { COUNTRY_LIST, COUNTRIES } from "@/lib/banking";
-import { ShieldCheck, Globe2, Landmark, Sparkles } from "lucide-react";
+import { ShieldCheck, Globe2, Landmark, Sparkles, PlayCircle, Download } from "lucide-react";
+import guideVideo from "@/assets/pi-bank-guide.mp4.asset.json";
 
 export const Route = createFileRoute("/guide")({
   head: () => ({
