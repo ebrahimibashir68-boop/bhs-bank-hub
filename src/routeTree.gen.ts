@@ -13,12 +13,16 @@ import { Route as TransferRouteImport } from './routes/transfer'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ServicesRouteImport } from './routes/services'
 import { Route as PiRouteImport } from './routes/pi'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as LendingRouteImport } from './routes/lending'
 import { Route as InternationalRouteImport } from './routes/international'
 import { Route as GuideRouteImport } from './routes/guide'
+import { Route as DepositsRouteImport } from './routes/deposits'
 import { Route as CashRouteImport } from './routes/cash'
+import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BillsRouteImport } from './routes/bills'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as IndexRouteImport } from './routes/index'
@@ -48,6 +52,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PiRoute = PiRouteImport.update({
   id: '/pi',
   path: '/pi',
@@ -63,6 +72,11 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LendingRoute = LendingRouteImport.update({
+  id: '/lending',
+  path: '/lending',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InternationalRoute = InternationalRouteImport.update({
   id: '/international',
   path: '/international',
@@ -73,9 +87,19 @@ const GuideRoute = GuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DepositsRoute = DepositsRouteImport.update({
+  id: '/deposits',
+  path: '/deposits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CashRoute = CashRouteImport.update({
   id: '/cash',
   path: '/cash',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardsRoute = CardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BillsRoute = BillsRouteImport.update({
@@ -126,12 +150,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
   '/bills': typeof BillsRoute
+  '/cards': typeof CardsRoute
   '/cash': typeof CashRoute
+  '/deposits': typeof DepositsRoute
   '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
+  '/lending': typeof LendingRoute
   '/mcp': typeof McpRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
+  '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
@@ -146,12 +174,16 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
   '/bills': typeof BillsRoute
+  '/cards': typeof CardsRoute
   '/cash': typeof CashRoute
+  '/deposits': typeof DepositsRoute
   '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
+  '/lending': typeof LendingRoute
   '/mcp': typeof McpRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
+  '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
@@ -167,12 +199,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
   '/bills': typeof BillsRoute
+  '/cards': typeof CardsRoute
   '/cash': typeof CashRoute
+  '/deposits': typeof DepositsRoute
   '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
+  '/lending': typeof LendingRoute
   '/mcp': typeof McpRoute
   '/more': typeof MoreRoute
   '/pi': typeof PiRoute
+  '/services': typeof ServicesRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
@@ -189,12 +225,16 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/bills'
+    | '/cards'
     | '/cash'
+    | '/deposits'
     | '/guide'
     | '/international'
+    | '/lending'
     | '/mcp'
     | '/more'
     | '/pi'
+    | '/services'
     | '/settings'
     | '/sitemap.xml'
     | '/topup'
@@ -209,12 +249,16 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/bills'
+    | '/cards'
     | '/cash'
+    | '/deposits'
     | '/guide'
     | '/international'
+    | '/lending'
     | '/mcp'
     | '/more'
     | '/pi'
+    | '/services'
     | '/settings'
     | '/sitemap.xml'
     | '/topup'
@@ -229,12 +273,16 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/bills'
+    | '/cards'
     | '/cash'
+    | '/deposits'
     | '/guide'
     | '/international'
+    | '/lending'
     | '/mcp'
     | '/more'
     | '/pi'
+    | '/services'
     | '/settings'
     | '/sitemap.xml'
     | '/topup'
@@ -250,12 +298,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssistantRoute: typeof AssistantRoute
   BillsRoute: typeof BillsRoute
+  CardsRoute: typeof CardsRoute
   CashRoute: typeof CashRoute
+  DepositsRoute: typeof DepositsRoute
   GuideRoute: typeof GuideRoute
   InternationalRoute: typeof InternationalRoute
+  LendingRoute: typeof LendingRoute
   McpRoute: typeof McpRoute
   MoreRoute: typeof MoreRoute
   PiRoute: typeof PiRoute
+  ServicesRoute: typeof ServicesRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TopupRoute: typeof TopupRoute
@@ -297,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pi': {
       id: '/pi'
       path: '/pi'
@@ -318,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lending': {
+      id: '/lending'
+      path: '/lending'
+      fullPath: '/lending'
+      preLoaderRoute: typeof LendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/international': {
       id: '/international'
       path: '/international'
@@ -332,11 +398,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deposits': {
+      id: '/deposits'
+      path: '/deposits'
+      fullPath: '/deposits'
+      preLoaderRoute: typeof DepositsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cash': {
       id: '/cash'
       path: '/cash'
       fullPath: '/cash'
       preLoaderRoute: typeof CashRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cards': {
+      id: '/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof CardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bills': {
@@ -402,12 +482,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssistantRoute: AssistantRoute,
   BillsRoute: BillsRoute,
+  CardsRoute: CardsRoute,
   CashRoute: CashRoute,
+  DepositsRoute: DepositsRoute,
   GuideRoute: GuideRoute,
   InternationalRoute: InternationalRoute,
+  LendingRoute: LendingRoute,
   McpRoute: McpRoute,
   MoreRoute: MoreRoute,
   PiRoute: PiRoute,
+  ServicesRoute: ServicesRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TopupRoute: TopupRoute,
