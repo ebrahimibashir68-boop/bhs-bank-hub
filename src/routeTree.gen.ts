@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransferRouteImport } from './routes/transfer'
+import { Route as TradeFinanceRouteImport } from './routes/trade-finance'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -20,11 +21,13 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LendingRouteImport } from './routes/lending'
 import { Route as InternationalRouteImport } from './routes/international'
 import { Route as GuideRouteImport } from './routes/guide'
+import { Route as FxRouteImport } from './routes/fx'
 import { Route as DepositsRouteImport } from './routes/deposits'
 import { Route as CashRouteImport } from './routes/cash'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as BillsRouteImport } from './routes/bills'
 import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PinetMetaRouteImport } from './routes/pinet.meta'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -35,6 +38,11 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 const TransferRoute = TransferRouteImport.update({
   id: '/transfer',
   path: '/transfer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradeFinanceRoute = TradeFinanceRouteImport.update({
+  id: '/trade-finance',
+  path: '/trade-finance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TopupRoute = TopupRouteImport.update({
@@ -87,6 +95,11 @@ const GuideRoute = GuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FxRoute = FxRouteImport.update({
+  id: '/fx',
+  path: '/fx',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DepositsRoute = DepositsRouteImport.update({
   id: '/deposits',
   path: '/deposits',
@@ -110,6 +123,11 @@ const BillsRoute = BillsRouteImport.update({
 const AssistantRoute = AssistantRouteImport.update({
   id: '/assistant',
   path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssetsRoute = AssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -148,11 +166,13 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assets': typeof AssetsRoute
   '/assistant': typeof AssistantRoute
   '/bills': typeof BillsRoute
   '/cards': typeof CardsRoute
   '/cash': typeof CashRoute
   '/deposits': typeof DepositsRoute
+  '/fx': typeof FxRoute
   '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
   '/lending': typeof LendingRoute
@@ -163,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
+  '/trade-finance': typeof TradeFinanceRoute
   '/transfer': typeof TransferRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -172,11 +193,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/assets': typeof AssetsRoute
   '/assistant': typeof AssistantRoute
   '/bills': typeof BillsRoute
   '/cards': typeof CardsRoute
   '/cash': typeof CashRoute
   '/deposits': typeof DepositsRoute
+  '/fx': typeof FxRoute
   '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
   '/lending': typeof LendingRoute
@@ -187,6 +210,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
+  '/trade-finance': typeof TradeFinanceRoute
   '/transfer': typeof TransferRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -197,11 +221,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/assets': typeof AssetsRoute
   '/assistant': typeof AssistantRoute
   '/bills': typeof BillsRoute
   '/cards': typeof CardsRoute
   '/cash': typeof CashRoute
   '/deposits': typeof DepositsRoute
+  '/fx': typeof FxRoute
   '/guide': typeof GuideRoute
   '/international': typeof InternationalRoute
   '/lending': typeof LendingRoute
@@ -212,6 +238,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/topup': typeof TopupRoute
+  '/trade-finance': typeof TradeFinanceRoute
   '/transfer': typeof TransferRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -223,11 +250,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/assets'
     | '/assistant'
     | '/bills'
     | '/cards'
     | '/cash'
     | '/deposits'
+    | '/fx'
     | '/guide'
     | '/international'
     | '/lending'
@@ -238,6 +267,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/topup'
+    | '/trade-finance'
     | '/transfer'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -247,11 +277,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/assets'
     | '/assistant'
     | '/bills'
     | '/cards'
     | '/cash'
     | '/deposits'
+    | '/fx'
     | '/guide'
     | '/international'
     | '/lending'
@@ -262,6 +294,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/topup'
+    | '/trade-finance'
     | '/transfer'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -271,11 +304,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/assets'
     | '/assistant'
     | '/bills'
     | '/cards'
     | '/cash'
     | '/deposits'
+    | '/fx'
     | '/guide'
     | '/international'
     | '/lending'
@@ -286,6 +321,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/topup'
+    | '/trade-finance'
     | '/transfer'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -296,11 +332,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssetsRoute: typeof AssetsRoute
   AssistantRoute: typeof AssistantRoute
   BillsRoute: typeof BillsRoute
   CardsRoute: typeof CardsRoute
   CashRoute: typeof CashRoute
   DepositsRoute: typeof DepositsRoute
+  FxRoute: typeof FxRoute
   GuideRoute: typeof GuideRoute
   InternationalRoute: typeof InternationalRoute
   LendingRoute: typeof LendingRoute
@@ -311,6 +349,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TopupRoute: typeof TopupRoute
+  TradeFinanceRoute: typeof TradeFinanceRoute
   TransferRoute: typeof TransferRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -326,6 +365,13 @@ declare module '@tanstack/react-router' {
       path: '/transfer'
       fullPath: '/transfer'
       preLoaderRoute: typeof TransferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade-finance': {
+      id: '/trade-finance'
+      path: '/trade-finance'
+      fullPath: '/trade-finance'
+      preLoaderRoute: typeof TradeFinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/topup': {
@@ -398,6 +444,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fx': {
+      id: '/fx'
+      path: '/fx'
+      fullPath: '/fx'
+      preLoaderRoute: typeof FxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/deposits': {
       id: '/deposits'
       path: '/deposits'
@@ -431,6 +484,13 @@ declare module '@tanstack/react-router' {
       path: '/assistant'
       fullPath: '/assistant'
       preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assets': {
+      id: '/assets'
+      path: '/assets'
+      fullPath: '/assets'
+      preLoaderRoute: typeof AssetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -480,11 +540,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssetsRoute: AssetsRoute,
   AssistantRoute: AssistantRoute,
   BillsRoute: BillsRoute,
   CardsRoute: CardsRoute,
   CashRoute: CashRoute,
   DepositsRoute: DepositsRoute,
+  FxRoute: FxRoute,
   GuideRoute: GuideRoute,
   InternationalRoute: InternationalRoute,
   LendingRoute: LendingRoute,
@@ -495,6 +557,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TopupRoute: TopupRoute,
+  TradeFinanceRoute: TradeFinanceRoute,
   TransferRoute: TransferRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
